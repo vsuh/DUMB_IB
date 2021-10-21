@@ -44,7 +44,7 @@ pipeline {
         }
       }
     }
-    stage ('2. Выгрузка ИБ в dt файл' + DT) {
+    stage ("2. Выгрузка ИБ в dt файл") {
       steps {
         script {
           // Cnt = load './lib/Common.groovy'
