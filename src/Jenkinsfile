@@ -106,13 +106,13 @@ pipeline {
         Cnt = load './lib/Common.groovy'
         DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
         DTfile = DTpath + "/${DPart}_${ib}.dt"
-        file = File file = new File(DTFile)
+        File file = new File(DTFile)
         DTSizeMb = getFileSizeMegaBytes(file)
         notifyEvents message: "Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ```${${DPart}_${ib}.dt}``` ${DTSizeMb}", 
           token: '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
     }}
     unsuccessful { script {
-      getFileSizeMegaBytes(file)
+      
         notifyEvents message: "Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками", 
           token: '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
     }}
