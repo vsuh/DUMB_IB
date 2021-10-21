@@ -13,6 +13,10 @@ pipeline {
     Cnt = load './lib/Common.groovy'
  
   }
+  options {
+    disableConcurrentBuilds(),
+    timestamps()
+  }
   stages {
     stage('1. Подготовка ИБ (блокировка, удаление сеансов)') {
       steps {
@@ -63,7 +67,7 @@ pipeline {
             if ( RETURN_STATUS == 0 ) {
               break
             } else {
-              echo "ПОПЫТКА " + i.toString()
+              echo ">>> ПОПЫТКА " + i.toString()
               RETURN_STATUS = bat returnStatus: true, script: """ chcp 65001 \n ${command} """
             }
             }
@@ -98,6 +102,9 @@ pipeline {
             bat """chcp 65001>nul
                 $command"""
         }
+        notifyEvents message: "Выгрузка <b>${JOB_BASE_NAME}</b> завершена", 
+          token: '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
+
     } }
   }
 }
