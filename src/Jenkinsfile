@@ -13,7 +13,7 @@ pipeline {
     Cnt = load './lib/Common.groovy'
     DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
     DTfile = "${DPart}_${ib}.dt"
-    DT = DTpath + "/" + DTfile
+    DT = "${DTpath}/${DTfile}"
 
   }
   options {
