@@ -16,7 +16,7 @@ pipeline {
     stage('1. Подготовка ИБ (блокировка, удаление сеансов)') {
       steps {
         script {
-          bat "md log"
+          
           withCredentials([usernamePassword(credentialsId: 'ClusterAdmin', passwordVariable: 'clPASSWD', usernameVariable: 'clADMIN')
             , usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             def command = """vrunner session kill --ras ${CLADDR}
