@@ -10,6 +10,7 @@ pipeline {
     
     VER1C = '8.3.18.1483'
     enCode = '0008'
+    notyfyToken = '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
     Cnt = load './lib/Common.groovy'
     DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
     DTfile = "${DPart}_${ib}.dt"
@@ -107,19 +108,14 @@ pipeline {
 
     } }
     success {script{
-        Cnt = load './lib/Common.groovy'
-        // DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
-        // DTfile = DTpath + "/${DPart}_${ib}.dt"
-        // File file = new File(DTpath + "/${DPart}_${ib}.dt")
-        // DTSizeMb = round(file.length()/(1024*1024)) + " mb"
         FS = Cnt.filesizeMb(DT).round(0)
         notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ```${DT}``` ${FS}", 
-          token: '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
+          token: notyfyToken
     }}
     unsuccessful { script {
       
         notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками", 
-          token: '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
+          token: notyfyToken
     }}
   }
 }
