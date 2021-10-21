@@ -3,7 +3,7 @@ pipeline {
   agent{ label 'mini' }
   environment {
     ib = "${JOB_BASE_NAME}"
-    DEBUG = true
+    DEBUG = false
     
     CLADDR = 'obr-app-11'
     DTpath = '/1c/dt'
@@ -21,11 +21,11 @@ pipeline {
           withCredentials([usernamePassword(credentialsId: 'ClusterAdmin', passwordVariable: 'clPASSWD', usernameVariable: 'clADMIN')
             , usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             def command = """vrunner session kill --ras ${CLADDR}
-                --cluster-admin ${clADMIN} --cluster-pwd ${clPASSWD}
-                --ibconnection /s${CLADDR}\\${ib}
-                --db ${ib} --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
-                --uccode ${enCode} --v8version ${VER1C}
-                """
+              --cluster-admin ${clADMIN} --cluster-pwd ${clPASSWD}
+              --ibconnection /s${CLADDR}\\${ib}
+              --db ${ib} --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
+              --uccode ${enCode} --v8version ${VER1C}
+              """
 
           command = command.replace("\n", " ")
           if (DEBUG) { 
@@ -41,43 +41,32 @@ pipeline {
     }
     stage ('2. Выгрузка ИБ в dt файл') {
       steps {
-          script {
-            Cnt = load './lib/Common.groovy'
-            DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
-            DTfile = DTpath + "/${DPart}_${ib}.dt"
-
-            withCredentials([usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
-              command = """vrunner dump ${DTfile} 
-                --ibconnection /s${CLADDR}\\${ib}
-                --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
-                --uccode ${enCode} --v8version ${VER1C}
-              """
-              command = command.replace("\n", " ")
-              if (DEBUG) { 
-                bat "echo "+ command + " > COMMAND.2.txt" 
-                echo "command: " + command
-              }
-              RETURN_STATUS = 1
-              
-              for (int i = 1; i < 5; ++i) {
-              if ( RETURN_STATUS == 0 ) {
-                break
-              } else {
-                RETURN_STATUS = bat returnStatus: true, script: """ chcp 65001 \n ${command} """
-              }
-              }
-            }
-          }
-        
-      }
-    }
-    stage ('3. Тестовые упражнения') {
-      steps {
         script {
           Cnt = load './lib/Common.groovy'
           DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
-          echo "dtFile = ${DPart}_${ib}.dt"
-          echo '#############################'
+          DTfile = DTpath + "/${DPart}_${ib}.dt"
+
+          withCredentials([usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
+            command = """vrunner dump ${DTfile} 
+              --ibconnection /s${CLADDR}\\${ib}
+              --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
+              --uccode ${enCode} --v8version ${VER1C}
+            """
+            command = command.replace("\n", " ")
+            if (DEBUG) { 
+              bat "echo "+ command + " > COMMAND.2.txt" 
+              echo "command: " + command
+            }
+            RETURN_STATUS = 1
+            
+            for (int i = 1; i < 5; ++i) {
+            if ( RETURN_STATUS == 0 ) {
+              break
+            } else {
+              RETURN_STATUS = bat returnStatus: true, script: """ chcp 65001 \n ${command} """
+            }
+            }
+          }
         }
       }
     }
@@ -88,21 +77,22 @@ pipeline {
         withCredentials([usernamePassword(credentialsId: 'ClusterAdmin', passwordVariable: 'clPASSWD', usernameVariable: 'clADMIN')
             , usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             def command = """vrunner session unlock
-            --ras ${ CLADDR }
-            --cluster-admin ${ clADMIN }
-            --cluster-pwd ${ clPASSWD }
-            --ibconnection /s${ CLADDR }\\${ ib }
-            --db ${ ib } --db-user ${ ibADMIN }
-            --db-pwd ${ ibPASSWORD }
-            --uccode ${ enCode }
-            --v8version ${ VER1C } """
+              --ras ${ CLADDR }
+              --cluster-admin ${ clADMIN }
+              --cluster-pwd ${ clPASSWD }
+              --ibconnection /s${ CLADDR }\\${ ib }
+              --db ${ ib } --db-user ${ ibADMIN }
+              --db-pwd ${ ibPASSWORD }
+              --uccode ${ enCode }
+              --v8version ${ VER1C } """
 
             command = command.replace("\n", " ")
             command = command.replace("\t", " ")
             command = command.replace("  ", " ")
-            echo "command: " + command
-
-//          bat "echo "+ command + " > COMMAND.P.txt"
+            if (DEBUG) { 
+              bat "echo "+ command + " > COMMAND.P.txt" 
+              echo "command: " + command
+            }
 
             bat """chcp 65001>nul
                 $command"""
