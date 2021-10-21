@@ -6,7 +6,7 @@ pipeline {
     DEBUG = false
     
     CLADDR = 'obr-app-11'
-    DTpath = '/1c/dt'
+    DTpath = '/1c/dt0'
     
     VER1C = '8.3.18.1483'
     enCode = '0008'
@@ -63,6 +63,7 @@ pipeline {
             if ( RETURN_STATUS == 0 ) {
               break
             } else {
+              echo "ПОПЫТКА " + i.toString()
               RETURN_STATUS = bat returnStatus: true, script: """ chcp 65001 \n ${command} """
             }
             }
