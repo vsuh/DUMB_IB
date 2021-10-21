@@ -15,7 +15,7 @@ pipeline {
     DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
     DTfile = "${DPart}_${ib}.dt"
     DT = "${DTpath}/${DTfile}"
-
+    FS = "${Cnt.filesizeMb(DT)} mb."
   }
   options {
     disableConcurrentBuilds()
@@ -108,9 +108,11 @@ pipeline {
 
     } }
     success {script{
-        FS = Cnt.filesizeMb(DT).round(0)
-        notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ```${DT}``` ${FS}", 
+        // FS = Cnt.filesizeMb(DT).round(0)
+        
+        notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ```${DT}``` ", 
           token: notyfyToken
+          echo "FS ${FS}"
     }}
     unsuccessful { script {
       
