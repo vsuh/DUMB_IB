@@ -13,61 +13,61 @@ pipeline {
     
   }
   stages {
-    stage('1. Подготовка ИБ (блокировка, удаление сеансов)') {
-      steps {
-        script {
+    // stage('1. Подготовка ИБ (блокировка, удаление сеансов)') {
+    //   steps {
+    //     script {
           
-          withCredentials([usernamePassword(credentialsId: 'ClusterAdmin', passwordVariable: 'clPASSWD', usernameVariable: 'clADMIN')
-            , usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
-            def command = """vrunner session kill --ras ${CLADDR}
-                --cluster-admin ${clADMIN} --cluster-pwd ${clPASSWD}
-                --ibconnection /s${CLADDR}\\${ib}
-                --db ${ib} --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
-                --uccode ${enCode} --v8version ${VER1C}
-                """
+    //       withCredentials([usernamePassword(credentialsId: 'ClusterAdmin', passwordVariable: 'clPASSWD', usernameVariable: 'clADMIN')
+    //         , usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
+    //         def command = """vrunner session kill --ras ${CLADDR}
+    //             --cluster-admin ${clADMIN} --cluster-pwd ${clPASSWD}
+    //             --ibconnection /s${CLADDR}\\${ib}
+    //             --db ${ib} --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
+    //             --uccode ${enCode} --v8version ${VER1C}
+    //             """
 
-          command = command.replace("\n", " ")
-          if (DEBUG) { 
-            bat "echo "+ command + " > COMMAND.1.txt" 
-            echo "command: " + command
-          }
+    //       command = command.replace("\n", " ")
+    //       if (DEBUG) { 
+    //         bat "echo "+ command + " > COMMAND.1.txt" 
+    //         echo "command: " + command
+    //       }
 
-          bat """chcp 65001
-              ${ command } """
-          }
-        }
-      }
-    }
-    stage ('2. Выгрузка ИБ в dt файл') {
-      steps {
+    //       bat """chcp 65001
+    //           ${ command } """
+    //       }
+    //     }
+    //   }
+    // }
+    // stage ('2. Выгрузка ИБ в dt файл') {
+    //   steps {
         
-          script {
-            withCredentials([usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
-              DTfile = DTpath + '/000' + ib + '.dt'
-              command = """vrunner dump ${DTfile} 
-                --ibconnection /s${CLADDR}\\${ib}
-                --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
-                --uccode ${enCode} --v8version ${VER1C}
-              """
-              command = command.replace("\n", " ")
-              if (DEBUG) { 
-                bat "echo "+ command + " > COMMAND.2.txt" 
-                echo "command: " + command
-              }
-              RETURN_STATUS = 1
+    //       script {
+    //         withCredentials([usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
+    //           DTfile = DTpath + '/000' + ib + '.dt'
+    //           command = """vrunner dump ${DTfile} 
+    //             --ibconnection /s${CLADDR}\\${ib}
+    //             --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
+    //             --uccode ${enCode} --v8version ${VER1C}
+    //           """
+    //           command = command.replace("\n", " ")
+    //           if (DEBUG) { 
+    //             bat "echo "+ command + " > COMMAND.2.txt" 
+    //             echo "command: " + command
+    //           }
+    //           RETURN_STATUS = 1
               
-              for (int i = 1; i < 5; ++i) {
-              if ( RETURN_STATUS == 0 ) {
-                break
-              } else {
-                RETURN_STATUS = bat returnStatus: true, script: """ chcp 65001 \n ${command} """
-              }
-              }
-            }
-          }
+    //           for (int i = 1; i < 5; ++i) {
+    //           if ( RETURN_STATUS == 0 ) {
+    //             break
+    //           } else {
+    //             RETURN_STATUS = bat returnStatus: true, script: """ chcp 65001 \n ${command} """
+    //           }
+    //           }
+    //         }
+    //       }
         
-      }
-    }
+    //   }
+    // }
     stage ('3. Тестовые упражнения') {
       steps {
         script {
@@ -80,31 +80,31 @@ pipeline {
       }
     }
   }
-  post {
-    always { script {
-        echo "POST: Снятие блокировки с ИБ"
-        withCredentials([usernamePassword(credentialsId: 'ClusterAdmin', passwordVariable: 'clPASSWD', usernameVariable: 'clADMIN')
-            , usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
-            def command = """vrunner session unlock
-            --ras ${ CLADDR }
-            --cluster-admin ${ clADMIN }
-            --cluster-pwd ${ clPASSWD }
-            --ibconnection /s${ CLADDR }\\${ ib }
-            --db ${ ib } --db-user ${ ibADMIN }
-            --db-pwd ${ ibPASSWORD }
-            --uccode ${ enCode }
-            --v8version ${ VER1C } """
+//   post {
+//     always { script {
+//         echo "POST: Снятие блокировки с ИБ"
+//         withCredentials([usernamePassword(credentialsId: 'ClusterAdmin', passwordVariable: 'clPASSWD', usernameVariable: 'clADMIN')
+//             , usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
+//             def command = """vrunner session unlock
+//             --ras ${ CLADDR }
+//             --cluster-admin ${ clADMIN }
+//             --cluster-pwd ${ clPASSWD }
+//             --ibconnection /s${ CLADDR }\\${ ib }
+//             --db ${ ib } --db-user ${ ibADMIN }
+//             --db-pwd ${ ibPASSWORD }
+//             --uccode ${ enCode }
+//             --v8version ${ VER1C } """
 
-            command = command.replace("\n", " ")
-            command = command.replace("\t", " ")
-            command = command.replace("  ", " ")
-            echo "command: " + command
+//             command = command.replace("\n", " ")
+//             command = command.replace("\t", " ")
+//             command = command.replace("  ", " ")
+//             echo "command: " + command
 
-//          bat "echo "+ command + " > COMMAND.P.txt"
+// //          bat "echo "+ command + " > COMMAND.P.txt"
 
-            bat """chcp 65001>nul
-                $command"""
-        }
-    } }
-  }
+//             bat """chcp 65001>nul
+//                 $command"""
+//         }
+//     } }
+//   }
 }
