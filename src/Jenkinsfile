@@ -22,7 +22,7 @@ pipeline {
             def command = """vrunner session kill --ras ${CLADDR}
                 --cluster-admin ${ clADMIN } --cluster-pwd ${ clPASSWD }
                 --ibconnection /s${ CLADDR }\\${ ib }
-                --db ${ ib } --db-user ${ ibADMIN } --db-pwd ${ ibPASSWORD }
+                --db-user ${ ibADMIN } --db-pwd ${ ibPASSWORD }
                 --uccode ${ enCode } --v8version ${ VER1C }
                 """
 
