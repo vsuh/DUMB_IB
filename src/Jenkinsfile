@@ -107,18 +107,18 @@ pipeline {
 
     } }
     success {script{
-        // Cnt = load './lib/Common.groovy'
+        Cnt = load './lib/Common.groovy'
         // DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
         // DTfile = DTpath + "/${DPart}_${ib}.dt"
         // File file = new File(DTpath + "/${DPart}_${ib}.dt")
         // DTSizeMb = round(file.length()/(1024*1024)) + " mb"
         FS = Cnt.filesizeMb(DT).round(0)
-        notifyEvents message: "Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ```${DT}``` ${FS}", 
+        notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ```${DT}``` ${FS}", 
           token: '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
     }}
     unsuccessful { script {
       
-        notifyEvents message: "Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками", 
+        notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками", 
           token: '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
     }}
   }
