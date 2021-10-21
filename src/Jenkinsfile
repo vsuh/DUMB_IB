@@ -39,8 +39,8 @@ pipeline {
               echo "command: " + command
             }
 
-            // bat """chcp 65001
-            //     ${ command } """
+            bat """chcp 65001
+                ${ command } """
           }
         }
       }
@@ -65,13 +65,13 @@ pipeline {
             }
             RETURN_STATUS = 1
             
-            // for (int i = 1; i < 5; ++i) {
-            // if ( RETURN_STATUS == 0 ) {
-            //   break
-            // } else {
-            //   echo ">>> ПОПЫТКА " + i.toString() + " <<<"
-            //   RETURN_STATUS = bat returnStatus: true, script: """ chcp 65001 \n ${command} """
-             }
+            for (int i = 1; i < 5; ++i) {
+            if ( RETURN_STATUS == 0 ) {
+              break
+            } else {
+              echo ">>> ПОПЫТКА " + i.toString() + " <<<"
+              RETURN_STATUS = bat returnStatus: true, script: """ chcp 65001 \n ${command} """
+            }
             }
           }
         }
@@ -103,16 +103,16 @@ pipeline {
 
             bat """chcp 65001>nul
                 $command"""
-//            bat "set"
+            bat "set"
         }
 
     } }
     success {script{
+        // FS = Cnt.filesizeMb(DT).round(0)
         
-        notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл `${DT}` ", 
+        notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ```${DT}``` ", 
           token: notyfyToken
-        FS = Cnt.filesizeMb(DT).round(0)
-        echo "FS ${FS}"
+          echo "FS ${FS}"
     }}
     unsuccessful { script {
       
