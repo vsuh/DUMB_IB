@@ -102,6 +102,7 @@ pipeline {
 
             bat """chcp 65001>nul
                 $command"""
+            bat "set"
         }
 
     } }
