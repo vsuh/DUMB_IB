@@ -46,7 +46,7 @@ pipeline {
         script {
           Cnt = load './lib/Common.groovy'
           DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
-          def DTfile = DTpath + "/${DPart}_${ib}.dt"
+          DTfile = DTpath + "/${DPart}_${ib}.dt"
 
           withCredentials([usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             command = """vrunner dump ${DTfile} 
@@ -103,9 +103,12 @@ pipeline {
 
     } }
     success {script{
-        // DTfile = DTpath + "/${DPart}_${ib}.dt"
-        echo "Имя dt: " + DTfile
-        notifyEvents message: "Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно", 
+        Cnt = load './lib/Common.groovy'
+        DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
+        DTfile = DTpath + "/${DPart}_${ib}.dt"
+        file = File file = new File(DTFile)
+        DTSizeMb = getFileSizeMegaBytes(file)
+        notifyEvents message: "Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ```${${DPart}_${ib}.dt}``` ${DTSizeMb}", 
           token: '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
     }}
     unsuccessful { script {
