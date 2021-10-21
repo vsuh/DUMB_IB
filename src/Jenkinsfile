@@ -107,7 +107,7 @@ pipeline {
         DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
         DTfile = DTpath + "/${DPart}_${ib}.dt"
         File file = new File(DTpath + "/${DPart}_${ib}.dt")
-        DTSizeMb = getFileSizeMegaBytes(file)
+        DTSizeMb = file.length()/(1024*1024)+" mb"
         notifyEvents message: "Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ```${${DPart}_${ib}.dt}``` ${DTSizeMb}", 
           token: '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
     }}
