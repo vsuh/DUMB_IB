@@ -71,7 +71,7 @@ pipeline {
             // } else {
             //   echo ">>> ПОПЫТКА " + i.toString() + " <<<"
             //   RETURN_STATUS = bat returnStatus: true, script: """ chcp 65001 \n ${command} """
-            // }
+             }
             }
           }
         }
