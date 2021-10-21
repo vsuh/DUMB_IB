@@ -43,7 +43,7 @@ pipeline {
         timeout(time: 1, unit: 'MINUTES') {
           script {
             withCredentials([usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
-              DTfile = DTpath + '/#_' + ib + '_.dt'
+              DTfile = DTpath + '/000' + ib + '.dt'
               command = """vrunner dump ${DTfile} 
                 --ibconnection /s${CLADDR}\\${ib}
                 --db ${ib} --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
