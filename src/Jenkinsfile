@@ -112,6 +112,7 @@ pipeline {
         // DTfile = DTpath + "/${DPart}_${ib}.dt"
         // File file = new File(DTpath + "/${DPart}_${ib}.dt")
         // DTSizeMb = round(file.length()/(1024*1024)) + " mb"
+        FS = Cnt.filesizeMb(DT).round(0)
         notifyEvents message: "Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ```${DT}``` ${FS}", 
           token: '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
     }}
