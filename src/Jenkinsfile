@@ -10,7 +10,8 @@ pipeline {
     
     VER1C = '8.3.18.1483'
     enCode = '0008'
-    
+    Cnt = load './lib/Common.groovy'
+ 
   }
   stages {
     stage('1. Подготовка ИБ (блокировка, удаление сеансов)') {
@@ -40,12 +41,12 @@ pipeline {
     }
     stage ('2. Выгрузка ИБ в dt файл') {
       steps {
-          Cnt = load './lib/Common.groovy'
-          DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
-      
           script {
+            Cnt = load './lib/Common.groovy'
+            DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
+            DTfile = DTpath + "/${DPart}_${ib}.dt"
+
             withCredentials([usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
-              DTfile = DTpath + "/${DPart}_${ib}.dt"
               command = """vrunner dump ${DTfile} 
                 --ibconnection /s${CLADDR}\\${ib}
                 --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
