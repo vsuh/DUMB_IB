@@ -301,6 +301,16 @@ def max(ArrayList numbers) {
 
 }
 
+def filesizeMb(filepath) {
+    File file = new File(filepath);
+        if(file.exists()){
+            return (double) file.length()/(1024*1024).round(0)
+        } else {
+            return 0
+        }
+
+}
+
 def formatDate(mydate, myFormatString =  "yyyy-MM-dd'T'HH:mm:ss"){
     // def sdf = new SimpleDateFormat(myFormatString)
     // return sdf.format(java.sql.Date.valueOf(mydate))
