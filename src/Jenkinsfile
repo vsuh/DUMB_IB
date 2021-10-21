@@ -11,7 +11,10 @@ pipeline {
     VER1C = '8.3.18.1483'
     enCode = '0008'
     Cnt = load './lib/Common.groovy'
- 
+    DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
+    DTfile = "${DPart}_${ib}.dt"
+    DT = DTpath + "/" + DTfile
+
   }
   options {
     disableConcurrentBuilds()
@@ -107,7 +110,7 @@ pipeline {
         DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
         DTfile = DTpath + "/${DPart}_${ib}.dt"
         File file = new File(DTpath + "/${DPart}_${ib}.dt")
-        DTSizeMb = file.length()/(1024*1024)+" mb"
+        DTSizeMb = round(file.length()/(1024*1024)) + " mb"
         notifyEvents message: "Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ```${${DPart}_${ib}.dt}``` ${DTSizeMb}", 
           token: '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
     }}
