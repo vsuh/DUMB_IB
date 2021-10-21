@@ -20,10 +20,10 @@ pipeline {
           withCredentials([usernamePassword(credentialsId: 'ClusterAdmin', passwordVariable: 'clPASSWD', usernameVariable: 'clADMIN')
             , usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             def command = """vrunner session kill --ras ${CLADDR}
-                --cluster-admin ${ clADMIN } --cluster-pwd ${ clPASSWD }
-                --ibconnection /s${ CLADDR }\\${ ib }
-                --db-user ${ ibADMIN } --db-pwd ${ ibPASSWORD }
-                --uccode ${ enCode } --v8version ${ VER1C }
+                --cluster-admin ${clADMIN} --cluster-pwd ${clPASSWD}
+                --ibconnection /s${CLADDR}\\${ib}
+                --db ${ib} --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
+                --uccode ${enCode} --v8version ${VER1C}
                 """
 
           command = command.replace("\n", " ")
@@ -46,7 +46,7 @@ pipeline {
               DTfile = DTpath + '/000' + ib + '.dt'
               command = """vrunner dump ${DTfile} 
                 --ibconnection /s${CLADDR}\\${ib}
-                --db ${ib} --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
+                --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
                 --uccode ${enCode} --v8version ${VER1C}
               """
               command = command.replace("\n", " ")
