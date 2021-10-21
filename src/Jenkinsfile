@@ -21,7 +21,6 @@ pipeline {
     stage('1. Подготовка ИБ (блокировка, удаление сеансов)') {
       steps {
         script {
-          
           withCredentials([usernamePassword(credentialsId: 'ClusterAdmin', passwordVariable: 'clPASSWD', usernameVariable: 'clADMIN')
             , usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             def command = """vrunner session kill --ras ${CLADDR}
@@ -30,15 +29,14 @@ pipeline {
               --db ${ib} --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
               --uccode ${enCode} --v8version ${VER1C}
               """
+            command = command.replace("\n", " ")
+            if (DEBUG) { 
+              bat "echo "+ command + " > COMMAND.1.txt" 
+              echo "command: " + command
+            }
 
-          command = command.replace("\n", " ")
-          if (DEBUG) { 
-            bat "echo "+ command + " > COMMAND.1.txt" 
-            echo "command: " + command
-          }
-
-          bat """chcp 65001
-              ${ command } """
+            bat """chcp 65001
+                ${ command } """
           }
         }
       }
@@ -48,7 +46,7 @@ pipeline {
         script {
           Cnt = load './lib/Common.groovy'
           DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
-          DTfile = DTpath + "/${DPart}_${ib}.dt"
+          def DTfile = DTpath + "/${DPart}_${ib}.dt"
 
           withCredentials([usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             command = """vrunner dump ${DTfile} 
@@ -105,10 +103,13 @@ pipeline {
 
     } }
     success {script{
+        // DTfile = DTpath + "/${DPart}_${ib}.dt"
+        echo "Имя dt: " + DTfile
         notifyEvents message: "Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно", 
           token: '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
     }}
     unsuccessful { script {
+      getFileSizeMegaBytes(file)
         notifyEvents message: "Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками", 
           token: '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
     }}
