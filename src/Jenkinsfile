@@ -14,7 +14,6 @@ pipeline {
     DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
     DTfile = "${DPart}_${ib}.dt"
     DT = "${DTpath}/${DTfile}"
-    FS = Cnt.filesizeMb(DT)
 
   }
   options {
@@ -45,15 +44,15 @@ pipeline {
         }
       }
     }
-    stage ('2. Выгрузка ИБ в dt файл') {
+    stage ('2. Выгрузка ИБ в dt файл' + DT) {
       steps {
         script {
-          Cnt = load './lib/Common.groovy'
-          DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
-          DTfile = DTpath + "/${DPart}_${ib}.dt"
+          // Cnt = load './lib/Common.groovy'
+          // DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
+          // DTfile = DTpath + "/${DPart}_${ib}.dt"
 
           withCredentials([usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
-            command = """vrunner dump ${DTfile} 
+            command = """vrunner dump ${DT} 
               --ibconnection /s${CLADDR}\\${ib}
               --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
               --uccode ${enCode} --v8version ${VER1C}
@@ -69,7 +68,7 @@ pipeline {
             if ( RETURN_STATUS == 0 ) {
               break
             } else {
-              echo ">>> ПОПЫТКА " + i.toString()
+              echo ">>> ПОПЫТКА " + i.toString() + " <<<"
               RETURN_STATUS = bat returnStatus: true, script: """ chcp 65001 \n ${command} """
             }
             }
@@ -108,12 +107,12 @@ pipeline {
 
     } }
     success {script{
-        Cnt = load './lib/Common.groovy'
-        DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
-        DTfile = DTpath + "/${DPart}_${ib}.dt"
-        File file = new File(DTpath + "/${DPart}_${ib}.dt")
-        DTSizeMb = round(file.length()/(1024*1024)) + " mb"
-        notifyEvents message: "Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ```${${DPart}_${ib}.dt}``` ${DTSizeMb}", 
+        // Cnt = load './lib/Common.groovy'
+        // DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
+        // DTfile = DTpath + "/${DPart}_${ib}.dt"
+        // File file = new File(DTpath + "/${DPart}_${ib}.dt")
+        // DTSizeMb = round(file.length()/(1024*1024)) + " mb"
+        notifyEvents message: "Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ```${DT}``` ${FS}", 
           token: '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
     }}
     unsuccessful { script {
