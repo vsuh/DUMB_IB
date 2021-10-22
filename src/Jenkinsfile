@@ -76,6 +76,7 @@ pipeline {
             //   }
             // }
           }
+          Cnt = load './lib/Common.groovy'
           echo "*** DT Class: __" + DT.getClass() + "__"
           echo "*** Cnt Class: _" + Cnt.getClass() + "__"
           FS = Cnt.psize("${DT}")
