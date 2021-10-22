@@ -74,9 +74,11 @@ pipeline {
             // }
           }
           // FS = Cnt.filesizeMb(DT)
-          File fl = new File("C:/1C/dt0/2021-10-22_mc_zup_111.dt")
+          File fl = new File("/1C/dt0/2021-10-22_mc_zup_111.dt")
             echo "1. " + fl + " ex. " + fl.exists() 
           File fm = new File("C:\\1C\\dt0\\2021-10-22_mc_zup_111.dt")
+            echo "1. " + fm + " ex. " + fm.exists() 
+          File fm = new File("C:\\\\1C\\\\dt0\\\\2021-10-22_mc_zup_111.dt")
             echo "1. " + fm + " ex. " + fm.exists() 
           fsize = (double) fl.length()/(1024*1024)
             echo "2. " + fsize
