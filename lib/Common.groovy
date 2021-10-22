@@ -303,7 +303,7 @@ def max(ArrayList numbers) {
 }
 
 def fsize(flpath) {
-    File pt = File(flpath)
+    File pt = new File(flpath)
     return (double) pt.length()
 }
 
