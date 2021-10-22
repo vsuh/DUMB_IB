@@ -80,7 +80,6 @@ pipeline {
     }
   }
   post {
-    agent{ label 'mini' }
     cleanup { script {
         echo "POST: Снятие блокировки с ИБ"
         withCredentials([usernamePassword(credentialsId: 'ClusterAdmin', passwordVariable: 'clPASSWD', usernameVariable: 'clADMIN')
@@ -109,7 +108,9 @@ pipeline {
         }
 
     } }
-    success {script{
+    success {
+    agent{ label 'mini' }
+      script{
       echo "Вычисляю размер DTшника ${DT}"
         // Cnto = load './lib/Common.groovy'
         // FS = Cnt.filesizeMb("$DT")
