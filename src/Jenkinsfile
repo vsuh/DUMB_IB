@@ -76,6 +76,7 @@ pipeline {
             //   }
             // }
           }
+          echo "*** Class: __" + DT.getClass() + "__"
           FS = Cnt.psize("${DT}")
           echo "1. " + DT + " FS: " + FS 
           // File fl = new File("C:/1c/dt0/2021-10-22_mc_zup_111.dt")
