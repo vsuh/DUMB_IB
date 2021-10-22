@@ -33,8 +33,9 @@ pipeline {
               --ibconnection /s${CLADDR}\\${ib}
               --db ${ib} --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
               --uccode ${enCode} --v8version ${VER1C}
-              """
-            command = command.replace("\n", " ")
+              """.stripIndent()
+
+            // command = command.replace("\n", " ")
             if (DEBUG) { 
               bat "echo "+ command + " > COMMAND.1.txt" 
               echo "command: " + command
@@ -74,7 +75,7 @@ pipeline {
             // }
           }
           // FS = Cnt.filesizeMb(DT)
-          File fl = new File("C:/1c/dt0/2021-10-22_mc_zup_111.dt")
+          File fl = new File("c:/1c/dt0/2021-10-22_mc_zup_111.dt")
             echo "1. " + fl + " ex. " + fl.exists() 
           File fm = new File("c:\\1c\\dt0\\2021-10-22_mc_zup_111.dt")
             echo "1. " + fm + " ex. " + fm.exists() 
