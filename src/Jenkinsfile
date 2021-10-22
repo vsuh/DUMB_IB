@@ -115,7 +115,7 @@ pipeline {
         // FZ = Cnt.filesizeMb('/1c/dt0/2021-10-22_mc_zup_111.dt')
       //   FT = Cnt.fsizeMb()
       // echo "    результат вычисления размера: :~:___:~:__ " + FT
-      File fs = new File('/1c/dt0/2021-10-22_mc_zup_111.dt')
+      File fs = new File('/tmp/winstone3743129844429277904.jar')
       echo "fs: " + fs + " ex: " + fs.exists()
       //    FS = FS.round()
       // echo "    округленный результат: " + FS
