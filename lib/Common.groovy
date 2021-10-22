@@ -309,8 +309,9 @@ def fsize() {
 }
 
 def psize(pt){
-    Path fl = Paths.get(pt)
-//    echo "------------- " + fl + ' ------------ ' + fl.exists()
+    Path pl = Paths.get(pt)
+    fl = pl.toFile()
+    echo "------------- " + fl + ' ------------ ' + fl.exists()
     return fl.length()
 }
 
