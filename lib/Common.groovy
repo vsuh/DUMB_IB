@@ -304,7 +304,7 @@ def max(ArrayList numbers) {
 
 def fsize() {
     File pt = new File('c:/1c/dt0/2021-10-22_mc_zup_111.dt')
-    return (double) pt.length()
+    return pt.length()
 }
 
 def filesizeMb(filepath) {
