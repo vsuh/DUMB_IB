@@ -2,8 +2,7 @@ import groovy.time.TimeCategory
 import java.time.*
 import java.time.format.*
 import java.text.SimpleDateFormat
-import java.nio
-
+import java.nio.file.Paths
 def exportEnvironmentVariablePrefix() {
 
     if (isUnix()) {

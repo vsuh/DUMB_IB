@@ -28,13 +28,13 @@ pipeline {
         script {
           withCredentials([usernamePassword(credentialsId: 'ClusterAdmin', passwordVariable: 'clPASSWD', usernameVariable: 'clADMIN')
             , usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
-            def command = """\
+            def command = """
               vrunner session kill --ras ${CLADDR}
               --cluster-admin ${clADMIN} --cluster-pwd ${clPASSWD}
               --ibconnection /s${CLADDR}\\${ib}
               --db ${ib} --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
               --uccode ${enCode} --v8version ${VER1C}
-              """.stripIndent()
+              """.replaceAll( /\n\s*/, " " )
 
             command = command.replace("\n", " ")
             if (DEBUG) { 
@@ -54,12 +54,12 @@ pipeline {
 
           withCredentials([usernamePassword(credentialsId: 'IBadmin', 
               passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
-            command = """\
+            command = """
               vrunner dump ${DT} 
               --ibconnection /s${CLADDR}\\${ib}
               --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
               --uccode ${enCode} --v8version ${VER1C}
-            """.stripIndent()
+            """.replaceAll( /\n\s*/, " " )
             command = command.replace("\n", " ")
             if (DEBUG) { 
               bat "echo "+ command + " > COMMAND.2.txt" 
@@ -96,7 +96,7 @@ pipeline {
         echo "POST: Снятие блокировки с ИБ"
         withCredentials([usernamePassword(credentialsId: 'ClusterAdmin', passwordVariable: 'clPASSWD', usernameVariable: 'clADMIN')
             , usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
-            def command = """\
+            def command = """
               vrunner session unlock
               --ras ${ CLADDR }
               --cluster-admin ${ clADMIN }
@@ -105,9 +105,9 @@ pipeline {
               --db ${ ib } --db-user ${ ibADMIN }
               --db-pwd ${ ibPASSWORD }
               --uccode ${ enCode }
-              --v8version ${ VER1C } """.stripIndent()
+              --v8version ${ VER1C } """.replaceAll( /\n\s*/, " " )
 
-            command = command.replace("\n", " ")
+            
 
             if (DEBUG) { 
               bat "echo "+ command + " > COMMAND.P.txt" 
