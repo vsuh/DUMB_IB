@@ -111,8 +111,9 @@ pipeline {
     success {script{
       echo "Вычисляю размер DTшника ${DT}"
         Cnto = load './lib/Common.groovy'
-        FS = "${Cnto.filesizeMb(DT)}"
-      echo "    результат вычисления размера: " + FS
+        FS = Cnto.fsize(DT)
+        FZ = Cnto.fsize('/1c/dt0/2021-10-22_mc_zup_111.dt')
+      echo "    результат вычисления размера: " + FS + " || " + FZ
          FS = FS.round()
       echo "    округленный результат: " + FS
         

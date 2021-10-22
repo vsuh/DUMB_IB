@@ -301,6 +301,11 @@ def max(ArrayList numbers) {
 
 }
 
+def fsize(path) {
+    Paths path = Paths.get(path)
+    return (double) Files.size(path)
+}
+
 def filesizeMb(filepath) {
     File file = new File("c:" + filepath)
     echo "got in param: " + file + " IS EXIST: " + file.exists()
