@@ -2,8 +2,8 @@ import groovy.time.TimeCategory
 import java.time.*
 import java.time.format.*
 import java.text.SimpleDateFormat
-import java.nio.file.Paths
-import java.nio.file
+// import java.nio.file.Paths
+import java.nio.file.*
 
 def exportEnvironmentVariablePrefix() {
 
