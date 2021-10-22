@@ -52,8 +52,7 @@ pipeline {
           // Cnt = load './lib/Common.groovy'
           // DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
           // DTfile = DTpath + "/${DPart}_${ib}.dt"
-echo "############## ${NOTE}"
-NOTE = "Stage 2."
+
           withCredentials([usernamePassword(credentialsId: 'IBadmin', 
               passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             command = """vrunner dump ${DT} 
@@ -77,6 +76,8 @@ NOTE = "Stage 2."
             //   }
             // }
           }
+          File fl = new File(DT)
+          NOTE = (fl.length()/(1024*1024)).round(0) + 'mb'
         }
       }
     }
@@ -111,8 +112,8 @@ NOTE = "Stage 2."
 
     } }
     success { script {
-      echo "    округленный результат: " 
-       echo "############## ${NOTE}"
+       
+       echo "########### РАЗМЕР ### ${NOTE}"
 
         notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ```${DT}``` ", 
           token: notyfyToken
