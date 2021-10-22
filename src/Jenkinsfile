@@ -28,7 +28,8 @@ pipeline {
         script {
           withCredentials([usernamePassword(credentialsId: 'ClusterAdmin', passwordVariable: 'clPASSWD', usernameVariable: 'clADMIN')
             , usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
-            def command = """vrunner session kill --ras ${CLADDR}
+            def command = """\
+              vrunner session kill --ras ${CLADDR}
               --cluster-admin ${clADMIN} --cluster-pwd ${clPASSWD}
               --ibconnection /s${CLADDR}\\${ib}
               --db ${ib} --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
