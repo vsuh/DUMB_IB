@@ -104,12 +104,12 @@ pipeline {
 
             bat """chcp 65001>nul
                 $command"""
-            bat "set"
+            // bat "set"
         }
 
     } }
     success {script{
-        // FS = Cnt.filesizeMb(DT).round(0)
+         FS = Cnt.filesizeMb(DT).round(0)
         
         notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ```${DT}``` ", 
           token: notyfyToken
