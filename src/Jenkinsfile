@@ -77,7 +77,11 @@ pipeline {
             // }
           }
           File fl = new File(DT)
-          NOTE = (fl.length()/(1024*1024)).round(0) + 'mb'
+            echo "1. " + fl
+          fsize = (double) fl.length()/(1024*1024)
+            echo "2. " + fsize
+          NOTE = fsize.round(0) + 'mb'
+            echo "3. " + NOTE
         }
       }
     }
