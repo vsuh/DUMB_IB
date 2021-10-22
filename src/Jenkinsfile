@@ -110,9 +110,7 @@ NOTE = "Stage 2."
         }
 
     } }
-    success {
-    agent{ label 'mini' }
-      script{
+    success { script {
       echo "    округленный результат: " 
        echo "############## ${NOTE}"
 
