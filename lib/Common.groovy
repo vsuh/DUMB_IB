@@ -310,7 +310,7 @@ def fsize() {
 
 def psize(pt){
     Path fl = Paths.get(pt)
-    echo "------------- " + fl + ' ------------ ' + fl.exists()
+//    echo "------------- " + fl + ' ------------ ' + fl.exists()
     return fl.length()
 }
 
