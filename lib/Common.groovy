@@ -301,9 +301,9 @@ def max(ArrayList numbers) {
 
 }
 
-def fsize(path) {
-    Paths path = Paths.get(path)
-    return (double) Files.size(path)
+def fsize(flpath) {
+    Paths pt = Paths.get(flpath)
+    return (double) Files.size(pt)
 }
 
 def filesizeMb(filepath) {
