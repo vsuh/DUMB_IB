@@ -303,9 +303,13 @@ def max(ArrayList numbers) {
 
 def filesizeMb(filepath) {
     File file = new File(filepath);
+    echo "file received " + file
+    echo "got filesize " + file.length()/(1024*1024)
         if(file.exists()){
-            return (double) file.length()/(1024*1024).round(0)
+            echo "file $filepath exists"
+            return (double) file.length()/(1024*1024)
         } else {
+            echo "file $filepath NOT exists"
             return 0
         }
 

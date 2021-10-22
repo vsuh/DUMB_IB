@@ -110,13 +110,9 @@ pipeline {
     } }
     success {script{
       echo "Вычисляю размер DTшника ${DT}"
-      echo "    загружаю библиотеку " + Cnt
-      Cnt = load './lib/Common.groovy'
-      echo "    результат загрузки " + Cnt
-      echo "    вызываю функцию вычисления размера файла"
          FS = Cnt.filesizeMb(DT)
       echo "    результат вычисления размера: " + FS
-         FS = FS.round(0)
+         FS = FS.round()
       echo "    округленный результат: " + FS
         
         notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ```${DT}``` ", 
