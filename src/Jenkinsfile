@@ -110,11 +110,11 @@ pipeline {
     } }
     success {script{
       echo "Вычисляю размер DTшника ${DT}"
-        Cnto = load './lib/Common.groovy'
-        FS = Cnt.filesizeMb("$DT")
-        FZ = Cnt.filesizeMb('/1c/dt0/2021-10-22_mc_zup_111.dt')
-        FT = Cnt.filesizeMb('c:/1c/dt0/2021-10-22_mc_zup_111.dt')
-      echo "    результат вычисления размера: :~:_" + FS + " __:~:__ " + FZ + "_:~:" + FT
+        // Cnto = load './lib/Common.groovy'
+        // FS = Cnt.filesizeMb("$DT")
+        // FZ = Cnt.filesizeMb('/1c/dt0/2021-10-22_mc_zup_111.dt')
+        FT = Cnt.fsizeMb()
+      echo "    результат вычисления размера: :~:___:~:__ " + FT
       File fs = new File(DT)
       echo "fs: " + fs + " ex: " + fs.exists()
       //    FS = FS.round()
