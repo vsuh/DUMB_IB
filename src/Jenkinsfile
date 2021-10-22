@@ -16,6 +16,7 @@ pipeline {
     DTfile = "${DPart}_${ib}.dt"
     DT = "${DTpath}\\${DTfile}"
     FS = "${Cnt.filesizeMb(DT)} mb."
+    NOTE = "Start"
   }
   options {
     disableConcurrentBuilds()
@@ -51,7 +52,8 @@ pipeline {
           // Cnt = load './lib/Common.groovy'
           // DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
           // DTfile = DTpath + "/${DPart}_${ib}.dt"
-
+echo "############## ${NOTE}"
+NOTE = "Stage 2."
           withCredentials([usernamePassword(credentialsId: 'IBadmin', 
               passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             command = """vrunner dump ${DT} 
@@ -111,17 +113,9 @@ pipeline {
     success {
     agent{ label 'mini' }
       script{
-      echo "Вычисляю размер DTшника ${DT}"
-        // Cnto = load './lib/Common.groovy'
-        // FS = Cnt.filesizeMb("$DT")
-        // FZ = Cnt.filesizeMb('/1c/dt0/2021-10-22_mc_zup_111.dt')
-      //   FT = Cnt.fsizeMb()
-      // echo "    результат вычисления размера: :~:___:~:__ " + FT
-      File fs = new File('/tmp/winstone3743129844429277904.jar')
-      echo "fs: " + fs + " ex: " + fs.exists() + " size: " + fs.length()
-      //    FS = FS.round()
-      // echo "    округленный результат: " + FS
-        
+      echo "    округленный результат: " 
+       echo "############## ${NOTE}"
+
         notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ```${DT}``` ", 
           token: notyfyToken
           echo "${DT} file FS ${FS}"
