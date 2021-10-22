@@ -116,7 +116,7 @@ pipeline {
       //   FT = Cnt.fsizeMb()
       // echo "    результат вычисления размера: :~:___:~:__ " + FT
       File fs = new File('/tmp/winstone3743129844429277904.jar')
-      echo "fs: " + fs + " ex: " + fs.exists()
+      echo "fs: " + fs + " ex: " + fs.exists() + " size: " + fs.length()
       //    FS = FS.round()
       // echo "    округленный результат: " + FS
         
