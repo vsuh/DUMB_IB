@@ -35,7 +35,7 @@ pipeline {
               --uccode ${enCode} --v8version ${VER1C}
               """.stripIndent()
 
-            // command = command.replace("\n", " ")
+            command = command.replace("\n", " ")
             if (DEBUG) { 
               bat "echo "+ command + " > COMMAND.1.txt" 
               echo "command: " + command
