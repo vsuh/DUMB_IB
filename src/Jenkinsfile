@@ -15,7 +15,7 @@ pipeline {
     DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
     DTfile = "${DPart}_${ib}.dt"
     DT = "${DTpath}/${DTfile}"
-    FS = "${Cnt.filesizeMb(DT)} mb."
+    FS = 0
     NOTE = "Start"
   }
   options {
@@ -49,9 +49,6 @@ pipeline {
     stage ("2. Выгрузка ИБ в dt файл") {
       steps {
         script {
-          // Cnt = load './lib/Common.groovy'
-          // DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
-          // DTfile = DTpath + "/${DPart}_${ib}.dt"
 
           withCredentials([usernamePassword(credentialsId: 'IBadmin', 
               passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
@@ -76,8 +73,9 @@ pipeline {
             //   }
             // }
           }
+          FS = Cnt.filesizeMb(DT)
           File fl = new File(DT)
-            echo "1. " + fl + " ex. " + fl.exists()
+            echo "1. " + fl + " ex. " + fl.exists() + "  FS: " + FS
           fsize = (double) fl.length()/(1024*1024)
             echo "2. " + fsize
           NOTE = fsize.round(0) + 'mb'
