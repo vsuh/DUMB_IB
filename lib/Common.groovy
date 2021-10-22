@@ -2,7 +2,7 @@ import groovy.time.TimeCategory
 import java.time.*
 import java.time.format.*
 import java.text.SimpleDateFormat
-import java.io.File
+import java.nio
 
 def exportEnvironmentVariablePrefix() {
 
@@ -305,6 +305,12 @@ def max(ArrayList numbers) {
 def fsize() {
     File pt = new File('c:/1c/dt0/2021-10-22_mc_zup_111.dt')
     return pt.length()
+}
+
+def psize(pt){
+    Path fl = Paths.get(pt)
+    echo "------------- " + fl + ' ------------ ' + fl.exists()
+    return fl.length()
 }
 
 def filesizeMb(filepath) {
