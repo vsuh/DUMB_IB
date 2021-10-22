@@ -80,6 +80,7 @@ pipeline {
     }
   }
   post {
+    agent{ label 'mini' }
     cleanup { script {
         echo "POST: Снятие блокировки с ИБ"
         withCredentials([usernamePassword(credentialsId: 'ClusterAdmin', passwordVariable: 'clPASSWD', usernameVariable: 'clADMIN')
