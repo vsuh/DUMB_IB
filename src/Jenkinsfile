@@ -52,7 +52,8 @@ pipeline {
           // DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
           // DTfile = DTpath + "/${DPart}_${ib}.dt"
 
-          withCredentials([usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
+          withCredentials([usernamePassword(credentialsId: 'IBadmin', 
+              passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             command = """vrunner dump ${DT} 
               --ibconnection /s${CLADDR}\\${ib}
               --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
@@ -65,14 +66,14 @@ pipeline {
             }
             RETURN_STATUS = 1
             
-            for (int i = 1; i < 5; ++i) {
-            if ( RETURN_STATUS == 0 ) {
-              break
-            } else {
-              echo ">>> ПОПЫТКА " + i.toString() + " <<<"
-              RETURN_STATUS = bat returnStatus: true, script: """ chcp 65001 \n ${command} """
-            }
-            }
+            // for (int i = 1; i < 5; ++i) {
+            //   if ( RETURN_STATUS == 0 ) {
+            //     break
+            //   } else {
+            //     echo ">>> ПОПЫТКА " + i.toString() + " <<<"
+            //     RETURN_STATUS = bat returnStatus: true, script: """ chcp 65001 \n ${command} """
+            //   }
+            // }
           }
         }
       }
