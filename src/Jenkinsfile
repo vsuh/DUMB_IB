@@ -110,7 +110,7 @@ pipeline {
     } }
     success {script{
       echo "Вычисляю размер DTшника ${DT}"
-         FS = Cnt.filesizeMb(DT)
+         FS = "${Cnt.filesizeMb(DT)}"
       echo "    результат вычисления размера: " + FS
          FS = FS.round()
       echo "    округленный результат: " + FS
