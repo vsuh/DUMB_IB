@@ -108,7 +108,7 @@ pipeline {
     } }
     success {script{
         
-        notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ${DTfile} (${FS})", 
+        notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ${DTfile} ", 
           token: notyfyToken
     }}
     unsuccessful { script {
