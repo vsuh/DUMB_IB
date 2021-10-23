@@ -76,21 +76,15 @@ pipeline {
             //   }
             // }
           }
-          Cnt = load './lib/Common.groovy'
-          echo "*** DT Class: __" + DT.getClass() + "__"
-          echo "*** Cnt Class: _" + Cnt.getClass() + "__"
-          FS = Cnt.psize("${DT}")
-          echo "1. " + DT + " FS: " + FS 
-          // File fl = new File("C:/1c/dt0/2021-10-22_mc_zup_111.dt")
-            
-          // File fm = new File("C:\\1c\\dt0\\2021-10-22_mc_zup_111.dt")
-          //   echo "1. " + fm + " ex. " + fm.exists() 
-          // File ft = new File("C:\\\\1c\\\\dt0\\\\2021-10-22_mc_zup_111.dt")
-          //   echo "1. " + ft + " ex. " + ft.exists() 
-          // fsize = (double) fl.length()/(1024*1024)
-          //   echo "2. " + fsize
-          // NOTE = fsize.round(0) + 'mb'
-          //   echo "3. " + NOTE
+File fl = new File(DT)
+
+println(fl.exists())
+sz=(double)fl.length()/(1024*1024)
+FS =sz.round()+' mb.'
+
+println(FS)
+
+
         }
       }
     }
