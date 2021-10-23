@@ -2,20 +2,21 @@
 pipeline {
   agent{ label 'mini' }
   environment {
-    ib = "${JOB_BASE_NAME}"
-    DEBUG = false
-    
-    CLADDR = 'obr-app-11'
-    DTpath = '/1c/dt0'
-    
-    VER1C = '8.3.18.1483'
-    enCode = '0008'
-    notyfyToken = '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
     Cnt = load './lib/Common.groovy'
-    DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
-    DTfile = "${DPart}_${ib}.dt"
-    DT = "${DTpath}/${DTfile}"
-    FS = "${Cnt.filesizeMb(DT)} mb."
+    ib = "${JOB_BASE_NAME}"   // Имя информационной базы
+    DEBUG = false             // Режим отладки
+    
+    CLADDR = 'obr-app-11'     // Адрес кластера 1С
+    DTpath = 'C:/1c/dt0'      // Каталог выгрузки dt файлов
+    
+    VER1C = '8.3.18.1483'     // Версия платформы 1С
+    enCode = '0008'           // Код разрешения сеанса
+    notyfyToken = '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
+    DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')  // Часть имени DT файла
+    DTfile = "${DPart}_${ib}.dt" // Имя DT файла
+    DT = "${DTpath}/${DTfile}"   // Полный путь к DT файлу
+    FS = ""                      // Строка с размером DT файла
+    NOTE = "Start"               // Буферная переменная (не исп.)
   }
   options {
     disableConcurrentBuilds()
@@ -32,9 +33,9 @@ pipeline {
               --ibconnection /s${CLADDR}\\${ib}
               --db ${ib} --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
               --uccode ${enCode} --v8version ${VER1C}
-              """
-            command = command.replace("\n", " ")
-            if (DEBUG) { 
+              """.replaceAll( /\n\s*/, " " )
+            
+            if ( DEBUG == true ) { 
               bat "echo "+ command + " > COMMAND.1.txt" 
               echo "command: " + command
             }
@@ -57,9 +58,9 @@ pipeline {
               --ibconnection /s${CLADDR}\\${ib}
               --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
               --uccode ${enCode} --v8version ${VER1C}
-            """
-            command = command.replace("\n", " ")
-            if (DEBUG) { 
+            """.replaceAll( /\n\s*/, " " )
+            
+            if ( DEBUG == true ) { 
               bat "echo "+ command + " > COMMAND.2.txt" 
               echo "command: " + command
             }
@@ -91,28 +92,24 @@ pipeline {
               --db ${ ib } --db-user ${ ibADMIN }
               --db-pwd ${ ibPASSWORD }
               --uccode ${ enCode }
-              --v8version ${ VER1C } """
+              --v8version ${ VER1C } 
+           """.replaceAll( /\n\s*/, " " )
 
-            command = command.replace("\n", " ")
-            command = command.replace("\t", " ")
-            command = command.replace("  ", " ")
-            if (DEBUG) { 
+            if ( DEBUG == true ) { 
               bat "echo "+ command + " > COMMAND.P.txt" 
               echo "command: " + command
             }
 
             bat """chcp 65001>nul
                 $command"""
-            bat "set"
+            
         }
 
     } }
     success {script{
-        // FS = Cnt.filesizeMb(DT).round(0)
         
-        notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ```${DT}``` ", 
+        notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ${DTfile} (${FS})", 
           token: notyfyToken
-          echo "FS ${FS}"
     }}
     unsuccessful { script {
       
