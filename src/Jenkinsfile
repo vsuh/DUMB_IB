@@ -5,7 +5,7 @@ pipeline {
     Cnt = load './lib/Common.groovy'
     ib = "${JOB_BASE_NAME}"   // Имя информационной базы
     DEBUG = false             // Режим отладки
-    
+    TIMES = ["mc_bnu":]
     CLADDR = 'obr-app-11'     // Адрес кластера 1С
     DTpath = 'C:/1c/dt'       // Каталог выгрузки dt файлов
     
@@ -76,6 +76,10 @@ pipeline {
               }
             }
           }
+            pt = new FilePath(Jenkins.getInstanceOrNull().getComputer(env.NODE_NAME).getChannel(), dt)
+            dtSize = (double)pt.length()/(1024*1024)
+            dtSize = dtSize.round().toString() + ' mb.'
+            NOTE = " в файл ${DTfile} (${dtSize}) " + NOTE
         }
       }
     }
@@ -109,12 +113,12 @@ pipeline {
     } }
     success {script{
 
-        notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно в файл ${DTfile} ${NOTE}", 
+        notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно ${NOTE}",
           token: notyfyToken
     }}
     unsuccessful { script {
       
-        notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками", 
+        notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками ${NOTE}", 
           token: notyfyToken
     }}
   }
