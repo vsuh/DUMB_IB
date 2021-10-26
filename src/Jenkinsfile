@@ -74,7 +74,7 @@ pipeline {
               } else {
                 echo ">>> ПОПЫТКА " + i.toString() + " <<<"
                 timeout ( time: timeoutValue, unit: 'SECONDS' ) {
-                  RETURN_STATUS = bat returnStatus: true
+                  RETURN_STATUS = bat returnStatus: true \
                     , script: """ chcp 65001 \n ${command} """
                 }
                 NOTE = "попыток: ${i.toString()}; RC: ${RETURN_STATUS}"
