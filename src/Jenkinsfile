@@ -94,8 +94,8 @@ pipeline {
     }
     stage ('3. Копирование DT в сетевой каталог') {
       steps { script {
-
-            def command1 = "if NOT exist ${NETpath} md ${NETpath}>nul 2>&1"
+            bat "dir ${NETpath}"
+            def command1 = "if NOT exist ${NETpath} md ${NETpath}>nul "
             if ( DEBUG == true ) { 
               bat "echo "+ command1 + " > COMMAND.3.txt" 
               echo "command: " + command1
