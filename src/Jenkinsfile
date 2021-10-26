@@ -54,8 +54,7 @@ pipeline {
           // DTfile = DTpath + "/${DPart}_${ib}.dt"
           def TIMES = [mc_bnu: 7200, mc_zup: 3600, mc_uat: 2400, mc_zup_111: 3600]
           timeoutValue = TIMES[ib]
-          timeoutValue1 = TIMES["mc_zup_111"]
-          echo "+++++++++++++++++ ${timeoutValue} ${timeoutValue1} ++++++++++++++++++"
+
           withCredentials([usernamePassword(credentialsId: 'IBadmin'
             , passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             command = """vrunner dump ${DT} 
@@ -74,7 +73,7 @@ pipeline {
               if ( RETURN_STATUS == 0 ) {
                 break
               } else {
-                echo ">>> ПОПЫТКА " + i.toString() + " timeout: ${timeoutValue} <<<"
+                echo ">>> ПОПЫТКА " + i.toString() + " timeout: ${timeoutValue} s. <<<"
                 timeout ( time: timeoutValue, unit: 'SECONDS' ) {
                   RETURN_STATUS = bat returnStatus: true,
                       script: " chcp 65001 \n ${command} "
