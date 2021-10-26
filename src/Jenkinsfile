@@ -104,6 +104,7 @@ pipeline {
               --db-pwd ${ ibPASSWORD }
               --uccode ${ enCode }
               --v8version ${ VER1C } 
+              --debuglog
            """.replaceAll( /\n\s*/, " " )
 
             if ( DEBUG == true ) { 
