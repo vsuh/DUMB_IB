@@ -56,7 +56,7 @@ pipeline {
             , passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             command = """vrunner dump ${DT} 
               --ibconnection /s${CLADDR}\\${ib}
-              --db-user ${ibADMIN}1 --db-pwd ${ibPASSWORD}
+              --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
               --uccode ${enCode} 
               --v8version ${VER1C}
               --debuglog
@@ -67,7 +67,7 @@ pipeline {
               echo "command: " + command
             }
             RETURN_STATUS = 1
-            i = 1
+            i = 0
             retry (5) {
               i++
               if ( RETURN_STATUS == 0 ) {
@@ -91,6 +91,20 @@ pipeline {
 
         }
       }
+    }
+    stage ('3. Копирование DT в сетевой каталог') {
+            def command = """\
+            if NOT exists ${NETpath} mkdir ${NETpath} \
+            copy ${DT} ${NetPath}
+            """
+            
+            if ( DEBUG == true ) { 
+              bat "echo "+ command + " > COMMAND.1.txt" 
+              echo "command: " + command
+            }
+
+            bat """chcp 65001
+                ${command} """
     }
   }
   post {
