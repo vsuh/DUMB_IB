@@ -12,7 +12,7 @@ pipeline {
     VER1C = '8.3.18.1483'     // Версия платформы 1С
     enCode = '0008'           // Код разрешения сеанса
     notyfyToken = '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
-    DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')  // Часть имени DT файла
+    DPart = Util.formatDate(Util.TimeNow(), 'yyyy-MM-dd')  // Часть имени DT файла
     DTfile = "${DPart}_${ib}.dt" // Имя DT файла
     DT = "${DTpath}/${DTfile}"   // Полный путь к DT файлу
     FS = ""                      // Строка с размером DT файла
