@@ -6,7 +6,6 @@ pipeline {
     Cnt = load './lib/Common.groovy'
     ib = "${JOB_BASE_NAME}"   // Имя информационной базы
     DEBUG = false             // Режим отладки
-    TIMES = ["mc_bnu": 7200, "mc_zup": 3600, "mc_uat": 2400]
     CLADDR = 'obr-app-11'     // Адрес кластера 1С
     DTpath = 'C:/1c/dt'       // Каталог выгрузки dt файлов
     
@@ -53,8 +52,10 @@ pipeline {
           // Cnt = load './lib/Common.groovy'
           // DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
           // DTfile = DTpath + "/${DPart}_${ib}.dt"
-
-          withCredentials([usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
+          TIMES = ["mc_bnu": 7200, "mc_zup": 3600, "mc_uat": 2400]
+          timeoutValue = TIMES[ib]
+          withCredentials([usernamePassword(credentialsId: 'IBadmin'
+            , passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             command = """vrunner dump ${DT} 
               --ibconnection /s${CLADDR}\\${ib}
               --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
@@ -72,15 +73,18 @@ pipeline {
                 break
               } else {
                 echo ">>> ПОПЫТКА " + i.toString() + " <<<"
-                RETURN_STATUS = bat returnStatus: true, script: """ chcp 65001 \n ${command} """
+                timeout ( time: timeoutValue, unit: 'SECONDS' ) {
+                  RETURN_STATUS = bat returnStatus: true
+                    , script: """ chcp 65001 \n ${command} """
+                }
                 NOTE = "попыток: ${i.toString()}; RC: ${RETURN_STATUS}"
               }
             }
           }
-            pt = new FilePath(Jenkins.getInstanceOrNull().getComputer(env.NODE_NAME).getChannel(), dt)
-            dtSize = (double)pt.length()/(1024*1024)
-            dtSize = dtSize.round().toString() + ' mb.'
-            NOTE = " в файл ${DTfile} (${dtSize}) " + NOTE
+          pt = new FilePath(Jenkins.getInstanceOrNull().getComputer(env.NODE_NAME).getChannel(), dt)
+          dtSize = (double)pt.length()/(1024*1024)
+          dtSize = dtSize.round().toString() + ' mb.'
+          NOTE = " в файл ${DTfile} (${dtSize}) " + NOTE
         }
       }
     }
