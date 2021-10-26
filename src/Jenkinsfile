@@ -94,17 +94,23 @@ pipeline {
     }
     stage ('3. Копирование DT в сетевой каталог') {
       steps { script {
-            def command = """\
-            if NOT exists ${NETpath} mkdir ${NETpath} \
-            copy ${DT} ${NetPath}
-            """
-            
+
+            def command = "if NOT exists ${NETpath} mkdir ${NETpath}>nul 2>&1"
             if ( DEBUG == true ) { 
-              bat "echo "+ command + " > COMMAND.1.txt" 
+              bat "echo "+ command + " > COMMAND.3.txt" 
+              echo "command: " + command
+            }
+            bat script: """chcp 65001
+                ${command} """
+
+
+            def command = "copy ${DT} ${NetPath}"
+            if ( DEBUG == true ) { 
+              bat "echo "+ command + " >> COMMAND.3.txt" 
               echo "command: " + command
             }
 
-            bat """chcp 65001
+            bat script: """chcp 65001
                 ${command} """
         }
       }
