@@ -52,9 +52,10 @@ pipeline {
           // Cnt = load './lib/Common.groovy'
           // DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
           // DTfile = DTpath + "/${DPart}_${ib}.dt"
-          def TIMES = [mc_bnu: 7200, mc_zup: 3600, mc_uat: 2400]
+          def TIMES = [mc_bnu: 7200, mc_zup: 3600, mc_uat: 2400, mc_zup_111: 3600]
           timeoutValue = TIMES[ib]
-          echo "+++++++++++++++++ ${timeoutValue} ++++++++++++++++++"
+          timeoutValue1 = TIMES["mc_zup_111"]
+          echo "+++++++++++++++++ ${timeoutValue} ${timeoutValue1} ++++++++++++++++++"
           withCredentials([usernamePassword(credentialsId: 'IBadmin'
             , passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             command = """vrunner dump ${DT} 
