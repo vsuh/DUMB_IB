@@ -147,12 +147,12 @@ pipeline {
     success {script{
 
         notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно ${NOTE}",
-          token: notyfyToken title: "Успешно"
+          token: notyfyToken, title: "Успешно", level: "success"
     }}
     unsuccessful { script {
       
         notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками ${NOTE}", 
-          token: notyfyToken title: "Неудача" attachBuildLog: true
+          token: notyfyToken, title: "<b>${ib}</b> Неудача", attachBuildLog: true, level: "error"
     }}
   }
 }
