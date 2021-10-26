@@ -94,25 +94,16 @@ pipeline {
     }
     stage ('3. Копирование DT в сетевой каталог') {
       steps { script {
-            bat """chcp 65001
-                dir ${NETpath}"""
-            def command1 = "if NOT exist ${NETpath} md ${NETpath}>nul "
-            if ( DEBUG == true ) { 
-              bat "echo "+ command1 + " > COMMAND.3.txt" 
-              echo "command: " + command1
+
+            withCredentials([usernamePassword(credentialsId: 'goblin_moscollector', passwordVariable: 'pasw', usernameVariable: 'user')]) {
+              def StrCommand = "cp ${DT} ${NetPath} ${user} ${pasw}"
+              if ( DEBUG == true ) { 
+                bat "echo "+ StrCommand + " >> COMMAND.3.txt" 
+                echo "command: " + StrCommand
+              }
             }
             bat script: """chcp 65001
-                ${command1} """
-
-
-            def command2 = "copy ${DT} ${NetPath}"
-            if ( DEBUG == true ) { 
-              bat "echo "+ command2 + " >> COMMAND.3.txt" 
-              echo "command: " + command2
-            }
-
-            bat script: """chcp 65001
-                ${command2} """
+                ${StrCommand} """
         }
       }
     }
