@@ -18,12 +18,12 @@ def TimeNow() {
     return t
 }
 
-def getPathSize(myFilePath) {
+def getPathSize(String myFilePath) {
     pt = getFilePath(myFilePath)
     return (double) pt.length()
 }
 
-def getFilePath(filename) {
+def getFilePath(String filename) {
     String nodeName = env.NODE_NAME
     if (nodeName == 'master') {
             return new FilePath(new File(path))

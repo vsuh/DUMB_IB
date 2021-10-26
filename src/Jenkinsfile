@@ -55,7 +55,7 @@ pipeline {
             , passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             command = """vrunner dump ${DT} 
               --ibconnection /s${CLADDR}\\${ib}
-              --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
+              --db-user """ + ibADMIN + """ --db-pwd """ + ibPASSWORD + """
               --uccode ${enCode} 
               --v8version ${VER1C}
               --debuglog
