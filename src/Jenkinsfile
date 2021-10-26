@@ -26,8 +26,8 @@ pipeline {
     stage('1. Подготовка ИБ (блокировка, удаление сеансов)') {
       steps {
         script {
-    dtSize = Util.getPathSize(dt)/(1024*1024)
-    echo "++++++++++++++++" + dtSize
+    // dtSize = Util.getPathSize(dt)/(1024*1024)
+    // echo "++++++++++++++++" + dtSize
           withCredentials([usernamePassword(credentialsId: 'ClusterAdmin', passwordVariable: 'clPASSWD', usernameVariable: 'clADMIN')
             , usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             def command = """vrunner session kill --ras ${CLADDR}
