@@ -72,7 +72,7 @@ pipeline {
               if ( RETURN_STATUS == 0 ) {
                 break
               } else {
-                echo ">>> ПОПЫТКА " + i.toString() + " <<<"
+                echo ">>> ПОПЫТКА " + i.toString() + " timeout: ${timeoutValue} <<<"
                 timeout ( time: timeoutValue, unit: 'SECONDS' ) {
                   RETURN_STATUS = bat returnStatus: true,
                       script: " chcp 65001 \n ${command} "
