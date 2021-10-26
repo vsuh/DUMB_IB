@@ -93,6 +93,7 @@ pipeline {
       }
     }
     stage ('3. Копирование DT в сетевой каталог') {
+      steps { script {
             def command = """\
             if NOT exists ${NETpath} mkdir ${NETpath} \
             copy ${DT} ${NetPath}
@@ -105,6 +106,8 @@ pipeline {
 
             bat """chcp 65001
                 ${command} """
+        }
+      }
     }
   }
   post {
