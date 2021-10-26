@@ -5,7 +5,7 @@ pipeline {
   environment {
     Util = load './lib/Utils.groovy'
     ib = "${JOB_BASE_NAME}"   // Имя информационной базы
-    DEBUG = true             // Режим отладки
+    DEBUG = true              // Режим отладки
     CLADDR = 'obr-app-11'     // Адрес кластера 1С
     DTpath = 'C:/1c/dt'       // Каталог выгрузки dt файлов
     
@@ -15,7 +15,7 @@ pipeline {
     DPart = Util.formatDate(Util.TimeNow(), 'yyyy-MM-dd')  // Часть имени DT файла
     DTfile = "${DPart}_${ib}.dt" // Имя DT файла
     DT = "${DTpath}/${DTfile}"   // Полный путь к DT файлу
-    FS = ""                      // Строка с размером DT файла
+    NETpath = "\\10.51.8.10\Backups\1C_BACKUPS\${ib}"    // Сетевой каталог для резервных копий
     NOTE = "Start"               // Буферная переменная (не исп.)
   }
   options {
@@ -56,7 +56,7 @@ pipeline {
             , passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             command = """vrunner dump ${DT} 
               --ibconnection /s${CLADDR}\\${ib}
-              --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
+              --db-user ${ibADMIN}1 --db-pwd ${ibPASSWORD}
               --uccode ${enCode} 
               --v8version ${VER1C}
               --debuglog
@@ -67,9 +67,11 @@ pipeline {
               echo "command: " + command
             }
             RETURN_STATUS = 1
-            
-            for (int i = 1; i < 5; ++i) {
+            i = 1
+            retry (5) {
+              i++
               if ( RETURN_STATUS == 0 ) {
+                currentBuild.result = "SUCCESS"
                 break
               } else {
                 echo ">>> ПОПЫТКА " + i.toString() + " timeout: ${timeoutValue} s. <<<"
@@ -77,6 +79,7 @@ pipeline {
                   RETURN_STATUS = bat returnStatus: true,
                       script: " chcp 65001 \n ${command} "
                 }
+                currentBuild.result = "FAILURE"
                 NOTE = "попыток: ${i.toString()}; RC: ${RETURN_STATUS}"
               }
             }
