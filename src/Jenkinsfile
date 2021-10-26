@@ -3,7 +3,7 @@ import hudson.FilePath
 pipeline {
   agent{ label 'mini' }
   environment {
-    Cnt = load './lib/Common.groovy'
+    Util = load './lib/Utils.groovy'
     ib = "${JOB_BASE_NAME}"   // Имя информационной базы
     DEBUG = false             // Режим отладки
     CLADDR = 'obr-app-11'     // Адрес кластера 1С
@@ -49,9 +49,6 @@ pipeline {
     stage ("2. Выгрузка ИБ в dt файл") {
       steps {
         script {
-          // Cnt = load './lib/Common.groovy'
-          // DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
-          // DTfile = DTpath + "/${DPart}_${ib}.dt"
           def TIMES = [mc_bnu: 7200, mc_zup: 3600, mc_uat: 2400, mc_zup_111: 3600]
           timeoutValue = TIMES[ib]
 
@@ -60,7 +57,9 @@ pipeline {
             command = """vrunner dump ${DT} 
               --ibconnection /s${CLADDR}\\${ib}
               --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
-              --uccode ${enCode} --v8version ${VER1C}
+              --uccode ${enCode} 
+              --v8version ${VER1C}
+              --debuglog
             """.replaceAll( /\n\s*/, " " )
             
             if ( DEBUG == true ) { 
@@ -104,7 +103,6 @@ pipeline {
               --db-pwd ${ ibPASSWORD }
               --uccode ${ enCode }
               --v8version ${ VER1C } 
-              --debuglog
            """.replaceAll( /\n\s*/, " " )
 
             if ( DEBUG == true ) { 
