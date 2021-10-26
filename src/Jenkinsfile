@@ -5,17 +5,14 @@ pipeline {
     Cnt = load './lib/Common.groovy'
     ib = "${JOB_BASE_NAME}"   // Имя информационной базы
     DEBUG = false             // Режим отладки
-    TIMES = ["mc_bnu": 7200, "mc_zup": 3600, "mc_uat": 2400]
     CLADDR = 'obr-app-11'     // Адрес кластера 1С
     DTpath = 'C:/1c/dt'       // Каталог выгрузки dt файлов
-    
     VER1C = '8.3.18.1483'     // Версия платформы 1С
     enCode = '0008'           // Код разрешения сеанса
     notyfyToken = '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
     DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')  // Часть имени DT файла
     DTfile = "${DPart}_${ib}.dt" // Имя DT файла
     DT = "${DTpath}/${DTfile}"   // Полный путь к DT файлу
-    FS = ""                      // Строка с размером DT файла
     NOTE = "Start"               // Буферная переменная (не исп.)
   }
   options {
@@ -49,11 +46,11 @@ pipeline {
     stage ("2. Выгрузка ИБ в dt файл") {
       steps {
         script {
-          // Cnt = load './lib/Common.groovy'
-          // DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')
-          // DTfile = DTpath + "/${DPart}_${ib}.dt"
+          def TIMES = [mc_bnu: 7200, mc_zup: 3600, mc_uat: 600, mc_zup_111: 3600]
+          timeoutValue = TIMES[ib]
 
-          withCredentials([usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
+          withCredentials([usernamePassword(credentialsId: 'IBadmin'
+              , passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             command = """vrunner dump ${DT} 
               --ibconnection /s${CLADDR}\\${ib}
               --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
@@ -65,13 +62,19 @@ pipeline {
               echo "command: " + command
             }
             RETURN_STATUS = 1
-            
-            for (int i = 1; i < 5; ++i) {
+            i = 0
+            retry (5) {
+              i++
               if ( RETURN_STATUS == 0 ) {
+                currentBuild.result = "SUCCESS"
                 break
               } else {
-                echo ">>> ПОПЫТКА " + i.toString() + " <<<"
-                RETURN_STATUS = bat returnStatus: true, script: """ chcp 65001 \n ${command} """
+                echo ">>> ПОПЫТКА " + i.toString() + " timeout: ${timeoutValue} s. <<<"
+                timeout ( time: timeoutValue, unit: 'SECONDS' ) {
+                  RETURN_STATUS = bat returnStatus: true,
+                      script: " chcp 65001 \n ${command} "
+                }
+                currentBuild.result = "FAILURE"
                 NOTE = "попыток: ${i.toString()}; RC: ${RETURN_STATUS}"
               }
             }
@@ -83,6 +86,23 @@ pipeline {
         }
       }
     }
+    stage ('3. Копирование DT в сетевой каталог') {
+      steps { script {
+            echo "3. stage"
+            // withCredentials([usernamePassword(credentialsId: 'goblin_moscollector', passwordVariable: 'pasw', usernameVariable: 'user')]) {
+            //   def StrCommand = "src/copyNet.bat ${DT} ${NetPath} ${user} ${pasw}"
+            //   if ( DEBUG == true ) { 
+            //     bat "echo "+ StrCommand + " >> COMMAND.3.txt" 
+            //     echo "command: " + StrCommand
+            //   }
+            //   bat script: """chcp 65001
+            //       ${StrCommand} """
+            // }
+        }
+      }
+    }
+  }
+
   }
   post {
     cleanup { script {
