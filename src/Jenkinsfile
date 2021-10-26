@@ -94,7 +94,8 @@ pipeline {
     }
     stage ('3. Копирование DT в сетевой каталог') {
       steps { script {
-            bat "dir ${NETpath}"
+            bat """chcp 65001
+                dir ${NETpath}"""
             def command1 = "if NOT exist ${NETpath} md ${NETpath}>nul "
             if ( DEBUG == true ) { 
               bat "echo "+ command1 + " > COMMAND.3.txt" 
@@ -146,12 +147,12 @@ pipeline {
     success {script{
 
         notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно ${NOTE}",
-          token: notyfyToken
+          token: notyfyToken title: "Успешно"
     }}
     unsuccessful { script {
       
         notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками ${NOTE}", 
-          token: notyfyToken
+          token: notyfyToken title: "Неудача" attachBuildLog: true
     }}
   }
 }
