@@ -1,5 +1,7 @@
 @echo on
 
+dir \1c\dt
+
 if !%1!==!! (
 	echo ’…“…’‘Ÿ €€Œ…’ 1 - Ž‹Ž… ˆŒŸ ”€‰‹€
 	exit 3
