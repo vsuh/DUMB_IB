@@ -1,3 +1,4 @@
+import hudson.FilePath
 
 pipeline {
   agent{ label 'mini' }
@@ -82,9 +83,11 @@ pipeline {
               }
             }
           }
-          dtSize = Util.getPathSize(dt)/(1024*1024)
+          pt = new FilePath(Jenkins.getInstanceOrNull().getComputer(env.NODE_NAME).getChannel(), dt)
+          dtSize = (double)pt.length()/(1024*1024)
           dtSize = dtSize.round().toString() + ' mb.'
           NOTE = " в файл ${DTfile} (${dtSize}) " + NOTE
+
         }
       }
     }
