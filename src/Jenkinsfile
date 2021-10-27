@@ -23,7 +23,7 @@ pipeline {
     timestamps()
   }
   stages {
-    stage('1. Подготовка ИБ (блокировка, удаление сеансов)') {
+    stage("1.\n Подготовка ИБ (блокировка, удаление сеансов)") {
       steps {
         script {
           withCredentials([usernamePassword(credentialsId: 'ClusterAdmin'
@@ -104,8 +104,8 @@ pipeline {
               bat "echo "+ StrCommand + " > COMMAND.3.txt"
               echo "command: " + StrCommand
             }
-            RC = bat returnStatus: true
-              , script: """chcp 65001
+            RC = bat returnStatus: true, 
+              script: """chcp 65001
                 ${StrCommand} """
             if (RC>0) {
               currentBuild.result = "UNSTABLE"
@@ -128,8 +128,8 @@ pipeline {
                 bat "echo "+ StrCommand + " > COMMAND.4.txt"
                 echo "command: " + StrCommand
               }
-              RC = bat returnStatus: true
-                , script: """chcp 65001
+              RC = bat returnStatus: true, 
+                script: """chcp 65001
                   ${StrCommand} """
               if (RC>0) {
                 currentBuild.result = "UNSTABLE"
