@@ -42,8 +42,11 @@ pipeline {
               bat 'echo  command  >COMMAND.1.txt' 
               echo "command: " + command
             }
-
-            bat "@chcp 65001>nul\n${command}"
+            try {
+              bat "@chcp 65001>nul\n${command}"
+            } catch ( Exception e ) {
+              echo "ОШИБКА: " + e.toString()
+            }
           }
         }
       }
