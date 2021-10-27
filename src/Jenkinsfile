@@ -121,19 +121,26 @@ pipeline {
     }
     stage ('4. Копирование DT в сетевой каталог') {
       steps { script {
-
-            withCredentials([usernamePassword(credentialsId: 'goblin_moscollector', passwordVariable: 'pasw', usernameVariable: 'user')]) {
-
+            withCredentials([usernamePassword(credentialsId: 'goblin_moscollector'
+                , passwordVariable: 'pasw', usernameVariable: 'user')]) {
               def StrCommand = "src/copyNet.bat ${DT} ${NetPath} ${user} ${pasw}"
               if ( DEBUG == true ) {
                 bat "echo "+ StrCommand + " > COMMAND.4.txt"
                 echo "command: " + StrCommand
               }
-              bat script: """chcp 65001
+              RC = bat returnStatus: true
+                , script: """chcp 65001
                   ${StrCommand} """
+              if (RC>0) {
+                currentBuild.result = "UNSTABLE"
+                bat """chchp 65001
+                echo #############################################
+                type log\\updateCf.log
+                echo #############################################
+                """
+              }
             }
-        }
-      }
+      }}
     }
   }
   post {
