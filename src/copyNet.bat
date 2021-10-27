@@ -1,5 +1,5 @@
 @echo on
-
+chcp 65001 
 dir \1c\dt
 
 if !%1!==!! (
