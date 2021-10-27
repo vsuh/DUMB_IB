@@ -76,9 +76,13 @@ pipeline {
                 break
               } else {
                 echo ">>> ПОПЫТКА " + i.toString() + " timeout: ${timeoutValue} s. <<<"
+                try {
                 timeout ( time: timeoutValue, unit: 'SECONDS' ) {
                   RETURN_STATUS = bat returnStatus: true,
                       script: "@chcp 65001>nul \n ${command}"
+                }
+                } catch ( Exception e ) {
+                  echo "ОШИБКА: " + e.toString()
                 }
 
                 currentBuild.result = "UNSTABLE"
