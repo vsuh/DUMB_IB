@@ -98,15 +98,15 @@ pipeline {
 
           withCredentials([usernamePassword(credentialsId: 'IBadmin'
             , passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
-              def CS = '"Srvr=""${CLADDR}"";Ref=""${ib}"";Usr=""${ibADMIN}"";Pwd=""${ibPASSWORD}"";"'
-              def StrCommand = "src/updateCf.bat ${CS} log\updateCf.log"
+              def conn = '"Srvr=""${CLADDR}"";Ref=""${ib}"";Usr=""${ibADMIN}"";Pwd=""${ibPASSWORD}"";"'
+              def StrCommand = "src/updateCf.bat " + conn + " log\updateCf.log"
               if ( DEBUG == true ) {
                 bat "echo "+ StrCommand + " > COMMAND.3.txt"
                 echo "command: " + StrCommand
               }
               bat script: """chcp 65001
                   ${StrCommand} """
-            }
+          }
         }
       }
     }
