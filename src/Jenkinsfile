@@ -51,7 +51,7 @@ pipeline {
     stage ("2. Выгрузка ИБ в dt файл") {
       steps {
         script {
-          def TIMES = [mc_bnu: 7200, mc_zup: 3600, mc_uat: 600, mc_zup_111: 3600]
+          def TIMES = [mc_bnu: 7200, mc_zup: 3600, mc_uat: 600, mc_zup_111: 600]
           timeoutValue = TIMES[ib]
 
           withCredentials([usernamePassword(credentialsId: 'IBadmin'
@@ -177,7 +177,7 @@ pipeline {
     }}
     unsuccessful { script {
 
-        notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками ${NOTE} (${currentBuild.durationString}) [${currentBuild.result}]", 
+        notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками ${NOTE} (${currentBuild.durationString}) [${currentBuild.result}] ${BUILD_URL}", 
           token: notyfyToken, title: "<b>${ib}</b> Неудача", attachBuildLog: true, level: "error"
     }}
   }
