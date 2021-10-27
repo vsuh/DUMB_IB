@@ -23,7 +23,7 @@ pipeline {
     timestamps()
   }
   stages {
-    stage("1.\n Подготовка ИБ (блокировка, удаление сеансов)") {
+    stage('1. Подготовка ИБ (блокировка, удаление сеансов)') {
       steps {
         script {
           withCredentials([usernamePassword(credentialsId: 'ClusterAdmin'
@@ -42,7 +42,7 @@ pipeline {
               echo "command: " + command
             }
 
-            bat """chcp 65001>nul
+            bat """@chcp 65001>nul
                 ${ command } """
           }
         }
@@ -63,7 +63,7 @@ pipeline {
               --v8version ${VER1C}
               --debuglog
             """.replaceAll( /\n\s*/, " " )
-            
+
             if ( DEBUG == true ) { 
               bat "echo "+ command + " > COMMAND.2.txt" 
               echo "command: " + command
@@ -79,9 +79,9 @@ pipeline {
                 echo ">>> ПОПЫТКА " + i.toString() + " timeout: ${timeoutValue} s. <<<"
                 timeout ( time: timeoutValue, unit: 'SECONDS' ) {
                   RETURN_STATUS = bat returnStatus: true,
-                      script: " chcp 65001>nul \n ${command} "
+                      script: "@chcp 65001>nul \n ${command}"
                 }
-                
+
                 currentBuild.result = "UNSTABLE"
                 NOTE = "попыток: ${i.toString()}; RC: ${RETURN_STATUS}"
               }
@@ -105,11 +105,11 @@ pipeline {
               echo "command: " + StrCommand
             }
             RC = bat returnStatus: true, 
-              script: """chcp 65001>nul
+              script: """@chcp 65001>nul
                 ${StrCommand} """
             if (RC>0) {
               currentBuild.result = "UNSTABLE"
-              bat """chcp 65001>nul
+              bat """@chcp 65001>nul
               @echo ################# [RC:${RC}] ####################
               @type log\\updateCf.log
               @echo #############################################
@@ -129,11 +129,11 @@ pipeline {
                 echo "command: " + StrCommand
               }
               RC = bat returnStatus: true, 
-                script: """chcp 65001>nul
+                script: """@chcp 65001>nul
                   ${StrCommand} """
               if (RC>0) {
                 currentBuild.result = "UNSTABLE"
-                bat """chcp 65001>nul
+                bat """@chcp 65001>nul
                 @echo ################# [RC:${RC}] ####################
                 @echo Ошибка копирования ${DT} в ${NetPath}
                 @echo #############################################
@@ -164,7 +164,7 @@ pipeline {
               echo "command: " + command
             }
 
-            bat """chcp 65001>nul
+            bat """@chcp 65001>nul
                 $command"""
 
         }
