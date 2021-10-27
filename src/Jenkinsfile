@@ -15,7 +15,7 @@ pipeline {
     DPart = Util.formatDate(Util.TimeNow(), 'yyyy-MM-dd')  // Часть имени DT файла
     DTfile = "${DPart}_${ib}.dt" // Имя DT файла
     DT = "${DTpath}/${DTfile}"   // Полный путь к DT файлу
-    NETpath = "\\\\10.51.8.10\\Backups\\1C_BACKUPS\\${ib}"    // Сетевой каталог для резервных копий
+    NetPath = "\\\\10.51.8.10\\Backups\\1C_BACKUPS\\${ib}"    // Сетевой каталог для резервных копий
     NOTE = "Start"               // Буферная переменная (не исп.)
   }
   options {
@@ -42,7 +42,7 @@ pipeline {
               echo "command: " + command
             }
 
-            bat """chcp 65001
+            bat """chcp 65001>nul
                 ${ command } """
           }
         }
@@ -79,7 +79,7 @@ pipeline {
                 echo ">>> ПОПЫТКА " + i.toString() + " timeout: ${timeoutValue} s. <<<"
                 timeout ( time: timeoutValue, unit: 'SECONDS' ) {
                   RETURN_STATUS = bat returnStatus: true,
-                      script: " chcp 65001 \n ${command} "
+                      script: " chcp 65001>nul \n ${command} "
                 }
                 
                 currentBuild.result = "UNSTABLE"
@@ -105,14 +105,14 @@ pipeline {
               echo "command: " + StrCommand
             }
             RC = bat returnStatus: true, 
-              script: """chcp 65001
+              script: """chcp 65001>nul
                 ${StrCommand} """
             if (RC>0) {
               currentBuild.result = "UNSTABLE"
-              bat """chchp 65001
-              echo #############################################
-              type log\\updateCf.log
-              echo #############################################
+              bat """chcp 65001>nul
+              @echo ################## [RC:${RC}] #####################
+              @type log\\updateCf.log
+              @echo #############################################
               """
             }
           }
@@ -129,14 +129,14 @@ pipeline {
                 echo "command: " + StrCommand
               }
               RC = bat returnStatus: true, 
-                script: """chcp 65001
+                script: """chcp 65001>nul
                   ${StrCommand} """
               if (RC>0) {
                 currentBuild.result = "UNSTABLE"
-                bat """chchp 65001
-                echo #############################################
-                type log\\updateCf.log
-                echo #############################################
+                bat """chcp 65001>nul
+                @echo ################## [RC:${RC}] #####################
+                @echo Ошибка копирования ${DT} в ${NetPath}
+                @echo #############################################
                 """
               }
             }

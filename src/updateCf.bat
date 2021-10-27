@@ -1,5 +1,6 @@
 
 @echo off
+chcp 65001>nul 
 
 Set root1c=C:\Program Files (x86)\1cv8
 Set ver1c=8.3.18.1483

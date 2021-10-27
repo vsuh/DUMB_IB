@@ -1,4 +1,4 @@
-﻿
+
 @echo off
 chcp 65001>nul 
 
@@ -33,4 +33,6 @@ if not exist %2 (
 
 echo xcopy /V /I /Y /Z %fn% %2
 xcopy /V /I /Y /Z %fn% %2
+
+exit %ERRORLEVEL%
 
