@@ -8,7 +8,9 @@ if !%3!==!! (
 	echo ТРЕБУЕТСЯ 3 параметра - строка соединения, код разрешения и имя файла лога
 	exit 5
 )
-echo 1cv8.exe" config /IBConnectionString %1 /UC %2 /UpdateDBCfg -Server  /DisableStartupMessages /DisableStartupDialogs /out %3
-"%root1c%\%ver1c%\bin\1cv8.exe" config /IBConnectionString %1 /UC %2 /UpdateDBCfg -Server  /DisableStartupMessages /DisableStartupDialogs /out %3
+Set cmd=config /UC%2 /IBConnectionString %1 /UpdateDBCfg -Server  /DisableStartupMessages /DisableStartupDialogs /out %3
+
+echo 1cv8.exe %cmd%
+"%root1c%\%ver1c%\bin\1cv8.exe" %cmd%
 
 exit %ERRORLEVEL%
