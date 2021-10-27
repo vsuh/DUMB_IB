@@ -166,7 +166,7 @@ pipeline {
 
             bat """chcp 65001>nul
                 $command"""
-            
+
         }
 
     } }
@@ -175,9 +175,14 @@ pipeline {
         notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно ${NOTE} (${currentBuild.durationString})",
           token: notyfyToken, title: "Успешно", level: "success"
     }}
-    unsuccessful { script {
-      
+    unstable { script {
+
         notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками ${NOTE} (${currentBuild.durationString})", 
+          token: notyfyToken, title: "<b>${ib}</b> Неудача", attachBuildLog: true, level: "error"
+    }}
+    unsuccessful  { script {
+
+        notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершилась со статусом " + currentBuild.result, 
           token: notyfyToken, title: "<b>${ib}</b> Неудача", attachBuildLog: true, level: "error"
     }}
   }
