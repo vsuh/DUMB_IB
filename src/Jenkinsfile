@@ -42,7 +42,7 @@ pipeline {
               echo "command: " + command
             }
 
-            bat '@chcp 65001>nul\n${command}'
+            bat "@chcp 65001>nul\n${command}"
           }
         }
       }
@@ -171,12 +171,12 @@ pipeline {
     } }
     success {script{
 
-        notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно ${NOTE} (${currentBuild.durationString}) ${BUILD_URL}/console",
+        notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно ${NOTE} (${currentBuild.durationString}) ${BUILD_URL}console",
           token: notyfyToken, title: "Успешно", level: "success"
     }}
     unsuccessful { script {
 
-        notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками ${NOTE} (${currentBuild.durationString}) [${currentBuild.result}] ${BUILD_URL}/console", 
+        notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками ${NOTE} (${currentBuild.durationString}) [${currentBuild.result}] ${BUILD_URL}console", 
           token: notyfyToken, title: "<b>${ib}</b> Неудача", attachBuildLog: true, level: "error"
     }}
   }
