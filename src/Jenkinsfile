@@ -115,7 +115,7 @@ pipeline {
               bat "echo "+ StrCommand + " > COMMAND.3.txt"
               echo "command: " + StrCommand
             }
-            timeout (time:30, utits: MINUTES) {
+            timeout (time:30) {
               RC = bat returnStatus: true, 
               script: """@chcp 65001>nul
                 ${StrCommand} """
