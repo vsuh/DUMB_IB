@@ -1,11 +1,14 @@
-﻿@echo on
-chcp 65001 
+﻿echo off
+chcp 65001>nul 
+echo dir %2
 dir %2
 
 if !%1!==!! (
 	echo ТРЕБУЕТСЯ ПАРАМЕТР 1 - ПОЛНОЕ ИМЯ ФАЙЛА
 	exit 3
 )
+Set fn=%1
+Set fn=%fn:/=\%
 if !%2!==!! (
 	echo ТРЕБУЕТСЯ ПАРАМЕТР 2 - СЕТЕВОЙ КАТАЛОГ
 	exit 3
@@ -28,5 +31,6 @@ if not exist %2 (
         exit 5
 )
 
-xcopy /V /I /Y /Z %1 %2
+echo xcopy /V /I /Y /Z %fn% %2
+xcopy /V /I /Y /Z %fn% %2
 ::  /Y
