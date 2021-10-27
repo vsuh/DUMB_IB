@@ -1,7 +1,7 @@
-﻿echo off
+﻿
+@echo off
 chcp 65001>nul 
-echo dir %2
-dir %2
+
 
 if !%1!==!! (
 	echo ТРЕБУЕТСЯ ПАРАМЕТР 1 - ПОЛНОЕ ИМЯ ФАЙЛА

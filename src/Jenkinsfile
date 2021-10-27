@@ -15,7 +15,7 @@ pipeline {
     DPart = Util.formatDate(Util.TimeNow(), 'yyyy-MM-dd')  // Часть имени DT файла
     DTfile = "${DPart}_${ib}.dt" // Имя DT файла
     DT = "${DTpath}/${DTfile}"   // Полный путь к DT файлу
-    NETpath = "\\\\10.51.8.10\\Backups\\1C_BACKUPS"    // Сетевой каталог для резервных копий
+    NETpath = "\\\\10.51.8.10\\Backups\\1C_BACKUPS\\${ib}"    // Сетевой каталог для резервных копий
     NOTE = "Start"               // Буферная переменная (не исп.)
   }
   options {
@@ -97,7 +97,7 @@ pipeline {
       steps { script {
 
             withCredentials([usernamePassword(credentialsId: 'goblin_moscollector', passwordVariable: 'pasw', usernameVariable: 'user')]) {
-              
+
               def StrCommand = "src/copyNet.bat ${DT} ${NetPath} ${user} ${pasw}"
               if ( DEBUG == true ) { 
                 bat "echo "+ StrCommand + " >> COMMAND.3.txt" 
