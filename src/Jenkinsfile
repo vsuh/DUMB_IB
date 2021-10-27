@@ -99,6 +99,7 @@ pipeline {
           withCredentials([usernamePassword(credentialsId: 'IBadmin'
             , passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
               def conn = '"Srvr=""${CLADDR}"";Ref=""${ib}"";Usr=""${ibADMIN}"";Pwd=""${ibPASSWORD}"";"'
+              echo '***' + conn + '***'
               def StrCommand = "src/updateCf.bat " + conn + " log\updateCf.log"
               if ( DEBUG == true ) {
                 bat "echo "+ StrCommand + " > COMMAND.3.txt"
