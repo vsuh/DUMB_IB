@@ -42,8 +42,11 @@ pipeline {
               bat 'echo  command  >COMMAND.1.txt' 
               echo "command: " + command
             }
-
-            bat "@chcp 65001>nul\n${command}"
+            try {
+              bat "@chcp 65001>nul\n${command}"
+            } catch ( Exception e ) {
+              echo "ОШИБКА: " + e.toString()
+            }
           }
         }
       }
@@ -79,10 +82,14 @@ pipeline {
                 break
               } else {
                 echo ">>> ПОПЫТКА " + i.toString() + " timeout: ${timeoutValue} s. <<<"
+                try {
                 timeout ( time: timeoutValue, unit: 'SECONDS' ) {
                   RETURN_STATUS = bat returnStatus: true,
 
                       script: "@chcp 65001>nul \n ${command}"
+                }
+                } catch ( Exception e ) {
+                  echo "ОШИБКА: " + e.toString()
                 }
 
                 currentBuild.result = "UNSTABLE"
@@ -108,9 +115,11 @@ pipeline {
               bat "echo "+ StrCommand + " > COMMAND.3.txt"
               echo "command: " + StrCommand
             }
-            RC = bat returnStatus: true, 
+            timeout (time:30) {
+              RC = bat returnStatus: true, 
               script: """@chcp 65001>nul
                 ${StrCommand} """
+            }
             if (RC>0) {
               currentBuild.result = "UNSTABLE"
               bat """@chcp 65001>nul
@@ -132,9 +141,14 @@ pipeline {
                 bat "echo "+ StrCommand + " > COMMAND.4.txt"
                 echo "command: " + StrCommand
               }
-              RC = bat returnStatus: true, 
-                script: """@chcp 65001>nul
-                  ${StrCommand} """
+              try {
+                RC = bat returnStatus: true, 
+                  script: """@chcp 65001>nul
+                    ${StrCommand} """
+              } catch ( Exception e ) {
+                echo "ОШИБКА: " + e.toString()
+              }
+
               if (RC>0) {
                 currentBuild.result = "UNSTABLE"
                 bat """@chcp 65001>nul
