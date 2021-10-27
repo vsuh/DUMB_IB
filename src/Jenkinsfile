@@ -5,17 +5,18 @@ pipeline {
   environment {
     Util = load './lib/Utils.groovy'
     ib = "${JOB_BASE_NAME}"   // Имя информационной базы
-    DEBUG = true              // Режим отладки
+    DEBUG = false             // Режим отладки
     CLADDR = 'obr-app-11'     // Адрес кластера 1С
     DTpath = 'C:/1c/dt'       // Каталог выгрузки dt файлов
-    
     VER1C = '8.3.18.1483'     // Версия платформы 1С
     SessEnblCode = '0008'           // Код разрешения сеанса
     notyfyToken = '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
     DPart = Util.formatDate(Util.TimeNow(), 'yyyy-MM-dd')  // Часть имени DT файла
     DTfile = "${DPart}_${ib}.dt" // Имя DT файла
     DT = "${DTpath}/${DTfile}"   // Полный путь к DT файлу
+
     NetPath = "\\\\10.51.8.10\\Backups\\1C_BACKUPS\\${ib}"    // Сетевой каталог для резервных копий
+
     NOTE = "Start"               // Буферная переменная (не исп.)
   }
   options {
@@ -50,11 +51,13 @@ pipeline {
     stage ("2. Выгрузка ИБ в dt файл") {
       steps {
         script {
+
           def TIMES = [mc_bnu: 7200, mc_zup: 3600, mc_uat: 600, mc_zup_111: 600]
           timeoutValue = TIMES[ib]
 
           withCredentials([usernamePassword(credentialsId: 'IBadmin'
             , passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
+
             command = """vrunner dump ${DT} 
               --ibconnection /s${CLADDR}\\${ib}
               --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
@@ -79,6 +82,7 @@ pipeline {
                 try {
                 timeout ( time: timeoutValue, unit: 'SECONDS' ) {
                   RETURN_STATUS = bat returnStatus: true,
+
                       script: "@chcp 65001>nul \n ${command}"
                 }
                 } catch ( Exception e ) {
@@ -86,6 +90,7 @@ pipeline {
                 }
 
                 currentBuild.result = "UNSTABLE"
+
                 NOTE = "попыток: ${i.toString()}; RC: ${RETURN_STATUS}"
               }
             }
@@ -145,6 +150,7 @@ pipeline {
             }
       }}
     }
+
   }
   post {
     cleanup { script {
