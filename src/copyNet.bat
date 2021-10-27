@@ -31,8 +31,8 @@ if not exist %2 (
         exit 5
 )
 
-echo xcopy /V /I /Y /Z %fn% %2
-xcopy /V /I /Y /Z %fn% %2
+echo xcopy /V /I /Y /Z /F /R %fn% %2
+xcopy /V /I /Y /Z /F /R  %fn% %2
 
 exit %ERRORLEVEL%
 

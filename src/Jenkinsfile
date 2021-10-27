@@ -10,7 +10,7 @@ pipeline {
     DTpath = 'C:/1c/dt'       // Каталог выгрузки dt файлов
     
     VER1C = '8.3.18.1483'     // Версия платформы 1С
-    enCode = '0008'           // Код разрешения сеанса
+    SessEnblCode = '0008'           // Код разрешения сеанса
     notyfyToken = '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
     DPart = Util.formatDate(Util.TimeNow(), 'yyyy-MM-dd')  // Часть имени DT файла
     DTfile = "${DPart}_${ib}.dt" // Имя DT файла
@@ -34,7 +34,7 @@ pipeline {
                 --cluster-admin ${clADMIN} --cluster-pwd ${clPASSWD}
                 --ibconnection /s${CLADDR}\\${ib}
                 --db ${ib} --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
-                --uccode ${enCode} --v8version ${VER1C}
+                --uccode ${SessEnblCode} --v8version ${VER1C}
               """.replaceAll( /\n\s*/, " " )
 
             if ( DEBUG == true ) { 
@@ -59,7 +59,7 @@ pipeline {
             command = """vrunner dump ${DT} 
               --ibconnection /s${CLADDR}\\${ib}
               --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
-              --uccode ${enCode} 
+              --uccode ${SessEnblCode} 
               --v8version ${VER1C}
               --debuglog
             """.replaceAll( /\n\s*/, " " )
@@ -99,7 +99,7 @@ pipeline {
           withCredentials([usernamePassword(credentialsId: 'IBadmin'
               , passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             def conn = '"Srvr=""'+CLADDR+'"";Ref=""'+ib+'"";Usr=""'+ibADMIN+'"";Pwd=""'+ibPASSWORD+'"";"'
-            def StrCommand = "src/updateCf.bat " + conn + " log\\updateCf.log"
+            def StrCommand = "src/updateCf.bat " + conn + " " + SessEnblCode + " log\\updateCf.log"
             if ( DEBUG == true ) {
               bat "echo "+ StrCommand + " > COMMAND.3.txt"
               echo "command: " + StrCommand
@@ -110,7 +110,7 @@ pipeline {
             if (RC>0) {
               currentBuild.result = "UNSTABLE"
               bat """chcp 65001>nul
-              @echo ################## [RC:${RC}] #####################
+              @echo ################# [RC:${RC}] ####################
               @type log\\updateCf.log
               @echo #############################################
               """
@@ -134,7 +134,7 @@ pipeline {
               if (RC>0) {
                 currentBuild.result = "UNSTABLE"
                 bat """chcp 65001>nul
-                @echo ################## [RC:${RC}] #####################
+                @echo ################# [RC:${RC}] ####################
                 @echo Ошибка копирования ${DT} в ${NetPath}
                 @echo #############################################
                 """
@@ -155,7 +155,7 @@ pipeline {
               --ibconnection /s${ CLADDR }\\${ ib }
               --db ${ ib } --db-user ${ ibADMIN }
               --db-pwd ${ ibPASSWORD }
-              --uccode ${ enCode }
+              --uccode ${ SessEnblCode }
               --v8version ${ VER1C } 
            """.replaceAll( /\n\s*/, " " )
 
