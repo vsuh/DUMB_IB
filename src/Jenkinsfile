@@ -38,7 +38,7 @@ pipeline {
               """.replaceAll( /\n\s*/, " " )
 
             if ( DEBUG == true ) { 
-              bat "echo "+ command + " > COMMAND.1.txt" 
+              bat 'echo  command  >COMMAND.1.txt' 
               echo "command: " + command
             }
 
@@ -172,12 +172,12 @@ pipeline {
     } }
     success {script{
 
-        notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно ${NOTE} (${currentBuild.durationString})",
+        notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно ${NOTE} (${currentBuild.durationString}) ${BUILD_URL}/console",
           token: notyfyToken, title: "Успешно", level: "success"
     }}
     unsuccessful { script {
 
-        notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками ${NOTE} (${currentBuild.durationString}) [${currentBuild.result}] ${BUILD_URL}", 
+        notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками ${NOTE} (${currentBuild.durationString}) [${currentBuild.result}] ${BUILD_URL}/console", 
           token: notyfyToken, title: "<b>${ib}</b> Неудача", attachBuildLog: true, level: "error"
     }}
   }
