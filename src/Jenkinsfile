@@ -1,18 +1,22 @@
+import hudson.FilePath
 
 pipeline {
   agent{ label 'mini' }
   environment {
-    Cnt = load './lib/Common.groovy'
+    Util = load './lib/Utils.groovy'
     ib = "${JOB_BASE_NAME}"   // Имя информационной базы
     DEBUG = false             // Режим отладки
     CLADDR = 'obr-app-11'     // Адрес кластера 1С
     DTpath = 'C:/1c/dt'       // Каталог выгрузки dt файлов
     VER1C = '8.3.18.1483'     // Версия платформы 1С
-    enCode = '0008'           // Код разрешения сеанса
+    SessEnblCode = '0008'           // Код разрешения сеанса
     notyfyToken = '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
-    DPart = Cnt.formatDate(Cnt.TimeNow(), 'yyyy-MM-dd')  // Часть имени DT файла
+    DPart = Util.formatDate(Util.TimeNow(), 'yyyy-MM-dd')  // Часть имени DT файла
     DTfile = "${DPart}_${ib}.dt" // Имя DT файла
     DT = "${DTpath}/${DTfile}"   // Полный путь к DT файлу
+
+    NetPath = "\\\\10.51.8.10\\Backups\\1C_BACKUPS\\${ib}"    // Сетевой каталог для резервных копий
+
     NOTE = "Start"               // Буферная переменная (не исп.)
   }
   options {
@@ -23,22 +27,23 @@ pipeline {
     stage('1. Подготовка ИБ (блокировка, удаление сеансов)') {
       steps {
         script {
-          withCredentials([usernamePassword(credentialsId: 'ClusterAdmin', passwordVariable: 'clPASSWD', usernameVariable: 'clADMIN')
-            , usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
+          withCredentials([usernamePassword(credentialsId: 'ClusterAdmin'
+              , passwordVariable: 'clPASSWD', usernameVariable: 'clADMIN')
+              , usernamePassword(credentialsId: 'IBadmin'
+              , passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             def command = """vrunner session kill --ras ${CLADDR}
-              --cluster-admin ${clADMIN} --cluster-pwd ${clPASSWD}
-              --ibconnection /s${CLADDR}\\${ib}
-              --db ${ib} --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
-              --uccode ${enCode} --v8version ${VER1C}
+                --cluster-admin ${clADMIN} --cluster-pwd ${clPASSWD}
+                --ibconnection /s${CLADDR}\\${ib}
+                --db ${ib} --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
+                --uccode ${SessEnblCode} --v8version ${VER1C}
               """.replaceAll( /\n\s*/, " " )
-            
+
             if ( DEBUG == true ) { 
-              bat "echo "+ command + " > COMMAND.1.txt" 
+              bat 'echo  command  >COMMAND.1.txt' 
               echo "command: " + command
             }
 
-            bat """chcp 65001
-                ${ command } """
+            bat "@chcp 65001>nul\n${command}"
           }
         }
       }
@@ -46,17 +51,21 @@ pipeline {
     stage ("2. Выгрузка ИБ в dt файл") {
       steps {
         script {
-          def TIMES = [mc_bnu: 7200, mc_zup: 3600, mc_uat: 600, mc_zup_111: 3600]
+
+          def TIMES = [mc_bnu: 7200, mc_zup: 3600, mc_uat: 600, mc_zup_111: 600]
           timeoutValue = TIMES[ib]
 
           withCredentials([usernamePassword(credentialsId: 'IBadmin'
-              , passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
+            , passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
+
             command = """vrunner dump ${DT} 
               --ibconnection /s${CLADDR}\\${ib}
               --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
-              --uccode ${enCode} --v8version ${VER1C}
+              --uccode ${SessEnblCode} 
+              --v8version ${VER1C}
+              --debuglog
             """.replaceAll( /\n\s*/, " " )
-            
+
             if ( DEBUG == true ) { 
               bat "echo "+ command + " > COMMAND.2.txt" 
               echo "command: " + command
@@ -72,36 +81,71 @@ pipeline {
                 echo ">>> ПОПЫТКА " + i.toString() + " timeout: ${timeoutValue} s. <<<"
                 timeout ( time: timeoutValue, unit: 'SECONDS' ) {
                   RETURN_STATUS = bat returnStatus: true,
-                      script: " chcp 65001 \n ${command} "
+
+                      script: "@chcp 65001>nul \n ${command}"
                 }
-                currentBuild.result = "FAILURE"
+
+                currentBuild.result = "UNSTABLE"
+
                 NOTE = "попыток: ${i.toString()}; RC: ${RETURN_STATUS}"
               }
             }
           }
-            pt = new FilePath(Jenkins.getInstanceOrNull().getComputer(env.NODE_NAME).getChannel(), dt)
-            dtSize = (double)pt.length()/(1024*1024)
-            dtSize = dtSize.round().toString() + ' mb.'
-            NOTE = " в файл ${DTfile} (${dtSize}) " + NOTE
+          pt = new FilePath(Jenkins.getInstanceOrNull().getComputer(env.NODE_NAME).getChannel(), dt)
+          dtSize = (double)pt.length()/(1024*1024)
+          dtSize = dtSize.round().toString() + ' mb.'
+          NOTE = " в файл ${DTfile} (${dtSize}) " + NOTE
         }
       }
     }
-    stage ('3. Копирование DT в сетевой каталог') {
+    stage ('3. Обновление кофигурации') {
       steps { script {
-            echo "3. stage"
-            // withCredentials([usernamePassword(credentialsId: 'goblin_moscollector', passwordVariable: 'pasw', usernameVariable: 'user')]) {
-            //   def StrCommand = "src/copyNet.bat ${DT} ${NetPath} ${user} ${pasw}"
-            //   if ( DEBUG == true ) { 
-            //     bat "echo "+ StrCommand + " >> COMMAND.3.txt" 
-            //     echo "command: " + StrCommand
-            //   }
-            //   bat script: """chcp 65001
-            //       ${StrCommand} """
-            // }
+          withCredentials([usernamePassword(credentialsId: 'IBadmin'
+              , passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
+            def conn = '"Srvr=""'+CLADDR+'"";Ref=""'+ib+'"";Usr=""'+ibADMIN+'"";Pwd=""'+ibPASSWORD+'"";"'
+            def StrCommand = "src/updateCf.bat " + conn + " " + SessEnblCode + " log\\updateCf.log"
+            if ( DEBUG == true ) {
+              bat "echo "+ StrCommand + " > COMMAND.3.txt"
+              echo "command: " + StrCommand
+            }
+            RC = bat returnStatus: true, 
+              script: """@chcp 65001>nul
+                ${StrCommand} """
+            if (RC>0) {
+              currentBuild.result = "UNSTABLE"
+              bat """@chcp 65001>nul
+              @echo ################# [RC:${RC}] ####################
+              @type log\\updateCf.log
+              @echo #############################################
+              """
+            }
+          }
         }
       }
     }
-  }
+    stage ('4. Копирование DT в сетевой каталог') {
+      steps { script {
+            withCredentials([usernamePassword(credentialsId: 'goblin_moscollector'
+                , passwordVariable: 'pasw', usernameVariable: 'user')]) {
+              def StrCommand = "src/copyNet.bat ${DT} ${NetPath} ${user} ${pasw}"
+              if ( DEBUG == true ) {
+                bat "echo "+ StrCommand + " > COMMAND.4.txt"
+                echo "command: " + StrCommand
+              }
+              RC = bat returnStatus: true, 
+                script: """@chcp 65001>nul
+                  ${StrCommand} """
+              if (RC>0) {
+                currentBuild.result = "UNSTABLE"
+                bat """@chcp 65001>nul
+                @echo ################# [RC:${RC}] ####################
+                @echo Ошибка копирования ${DT} в ${NetPath}
+                @echo #############################################
+                """
+              }
+            }
+      }}
+    }
 
   }
   post {
@@ -116,7 +160,7 @@ pipeline {
               --ibconnection /s${ CLADDR }\\${ ib }
               --db ${ ib } --db-user ${ ibADMIN }
               --db-pwd ${ ibPASSWORD }
-              --uccode ${ enCode }
+              --uccode ${ SessEnblCode }
               --v8version ${ VER1C } 
            """.replaceAll( /\n\s*/, " " )
 
@@ -125,21 +169,21 @@ pipeline {
               echo "command: " + command
             }
 
-            bat """chcp 65001>nul
+            bat """@chcp 65001>nul
                 $command"""
-            
+
         }
 
     } }
     success {script{
 
-        notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно ${NOTE}",
-          token: notyfyToken
+        notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно ${NOTE} (${currentBuild.durationString}) ${BUILD_URL}console",
+          token: notyfyToken, title: "Успешно", level: "success"
     }}
     unsuccessful { script {
-      
-        notifyEvents message: "${BUILD_DISPLAY_NAME} Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками ${NOTE}", 
-          token: notyfyToken
+
+        notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками ${NOTE} (${currentBuild.durationString}) [${currentBuild.result}] ${BUILD_URL}console", 
+          token: notyfyToken, title: "<b>${ib}</b> Неудача", attachBuildLog: true, level: "error"
     }}
   }
 }
