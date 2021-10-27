@@ -16,7 +16,5 @@ echo 1cv8.exe %cmd%
 "%root1c%\%ver1c%\bin\1cv8.exe" %cmd%
 
 Set RC=%ERRORLEVEL%
-dir %log%
-copy %log% tt
 if exist %log% type %log%
 exit %RC%
