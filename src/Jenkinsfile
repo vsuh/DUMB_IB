@@ -42,8 +42,7 @@ pipeline {
               echo "command: " + command
             }
 
-            bat """@chcp 65001>nul
-                ${ command } """
+            bat '@chcp 65001>nul\n${command}'
           }
         }
       }
