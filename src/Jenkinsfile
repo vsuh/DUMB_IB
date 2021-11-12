@@ -35,7 +35,7 @@ pipeline {
                 --cluster-admin ${clADMIN} --cluster-pwd ${clPASSWD}
                 --ibconnection /s${CLADDR}\\${ib}
                 --db ${ib} --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
-                --uccode ${SessEnblCode} --v8version ${VER1C}
+                --uccode ${SessEnblCode} --v8version ${VER1C} --try 5
               """.replaceAll( /\n\s*/, " " )
 
             if ( DEBUG == true ) { 
@@ -168,14 +168,14 @@ pipeline {
         withCredentials([usernamePassword(credentialsId: 'ClusterAdmin', passwordVariable: 'clPASSWD', usernameVariable: 'clADMIN')
             , usernamePassword(credentialsId: 'IBadmin', passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
             def command = """vrunner session unlock
-              --ras ${ CLADDR }
-              --cluster-admin ${ clADMIN }
-              --cluster-pwd ${ clPASSWD }
-              --ibconnection /s${ CLADDR }\\${ ib }
-              --db ${ ib } --db-user ${ ibADMIN }
-              --db-pwd ${ ibPASSWORD }
-              --uccode ${ SessEnblCode }
-              --v8version ${ VER1C } 
+              --ras ${CLADDR}
+              --cluster-admin ${clADMIN}
+              --cluster-pwd ${clPASSWD}
+              --ibconnection /s${CLADDR}\\${ib}
+              --db ${ib} --db-user ${ibADMIN}
+              --db-pwd ${ibPASSWORD}
+              --uccode ${SessEnblCode}
+              --v8version ${VER1C} --try 5
            """.replaceAll( /\n\s*/, " " )
 
             if ( DEBUG == true ) { 
