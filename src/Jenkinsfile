@@ -48,6 +48,7 @@ pipeline {
               echo "ОШИБКА: " + e.toString()
             }
           }
+echo ">>>>>>>>> " + currentBuild.result
         }
       }
     }
@@ -102,7 +103,8 @@ pipeline {
           dtSize = (double)pt.length()/(1024*1024)
           dtSize = dtSize.round().toString() + ' mb.'
           NOTE = " в файл ${DTfile} (${dtSize}) " + NOTE
-        }
+echo ">>>>>>>>> " + currentBuild.result
+       }
       }
     }
     stage ('3. Обновление кофигурации') {
@@ -129,6 +131,7 @@ pipeline {
               """
             }
           }
+echo ">>>>>>>>> " + currentBuild.result
         }
       }
     }
@@ -158,6 +161,7 @@ pipeline {
                 """
               }
             }
+echo ">>>>>>>>> " + currentBuild.result
       }}
     }
 
@@ -187,7 +191,7 @@ pipeline {
                 $command"""
 
         }
-
+echo ">>>>>>>>> " + currentBuild.result
     } }
     success {script{
 
