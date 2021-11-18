@@ -84,26 +84,27 @@ echo ">>>>>>>>> " + currentBuild.result
               } else {
                 echo ">>> ПОПЫТКА " + i.toString() + " timeout: ${timeoutValue} s. <<<"
                 try {
-                timeout ( time: timeoutValue, unit: 'SECONDS' ) {
-                  RETURN_STATUS = bat returnStatus: true,
-
-                      script: "@chcp 65001>nul \n ${command}"
-                }
+                  timeout ( time: timeoutValue, unit: 'SECONDS' ) {
+                    RETURN_STATUS = bat returnStatus: true,
+                        script: "@chcp 65001>nul \n ${command}"
+                  }
                 } catch ( Exception e ) {
                   echo "ОШИБКА: " + e.toString()
                 }
-
-                currentBuild.result = "UNSTABLE"
-
                 NOTE = "попыток: ${i.toString()}; RC: ${RETURN_STATUS}"
+                echo "))))) " + NOTE
+                if ( RETURN_STATUS > 0 ) {
+                  currentBuild.result = "UNSTABLE"
+                  throw new Exception("Throw to retry unloading")
+                }
               }
             }
           }
           pt = new FilePath(Jenkins.getInstanceOrNull().getComputer(env.NODE_NAME).getChannel(), dt)
           dtSize = (double)pt.length()/(1024*1024)
           dtSize = dtSize.round().toString() + ' mb.'
-          NOTE = " в файл ${DTfile} (${dtSize}) " + NOTE
-echo ">>>>>>>>> " + currentBuild.result
+          NOTE = "Выгрузка ИБ ${CLADDR}\\${ib} в файл ${DTfile} (${dtSize}) " + NOTE
+echo ">>>>>>>>> " + currentBuild.result + " --- " + NOTE
        }
       }
     }
