@@ -160,6 +160,10 @@ echo ">>>>>>>>> " + currentBuild.result
                 @echo Ошибка копирования ${DT} в ${NetPath}
                 @echo #############################################
                 """
+              } else {
+               bat """@chcp 65001>nul
+                   del ${DT}
+               """
               }
             }
 echo ">>>>>>>>> " + currentBuild.result
