@@ -162,7 +162,7 @@ echo ">>>>>>>>> " + currentBuild.result
                 """
               } else {
                bat """@chcp 65001>nul
-                   del ${DT}
+                   del ${DT.replaceAll( /\//, "\\" )}
                """
               }
             }
