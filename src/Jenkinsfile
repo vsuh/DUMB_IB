@@ -48,7 +48,9 @@ pipeline {
               echo "ОШИБКА: " + e.toString()
             }
           }
-echo ">>>>>>>>> " + currentBuild.result
+        }
+        script {
+          echo ">>>>>>>>> " + currentBuild.result
         }
       }
     }
@@ -161,6 +163,7 @@ echo ">>>>>>>>> " + currentBuild.result
                 @echo #############################################
                 """
               } else {
+               echo "delete file ${DT.replaceAll( /\//, '\\' )"
                bat """@chcp 65001>nul
                    del ${DT.replaceAll( /\//, "\\" )}
                """
