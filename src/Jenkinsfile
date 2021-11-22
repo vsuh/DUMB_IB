@@ -158,9 +158,12 @@ echo ">>>>>>>>> " + currentBuild.result
               if (RC>0) {
                 currentBuild.result = "UNSTABLE"
                 bat """@chcp 65001>nul
-                @echo ################# [RC:${RC}] ####################
-                @echo Ошибка копирования ${DT} в ${NetPath}
-                @echo #############################################
+                  Set src=${DT.replaceAll( /\//, "\\" )}
+                  Set trg=${NetPath}\${DTfile}
+                  if exist %trg% del %trg%
+                  @echo ################# [RC:${RC}] ####################
+                  @echo Ошибка копирования %src% в %trg%
+                  @echo #############################################
                 """
               } else {
                echo "##### " + DT.replaceAll( /\//, "\\" ) + " #####"
