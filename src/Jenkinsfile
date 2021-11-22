@@ -158,7 +158,7 @@ echo ">>>>>>>>> " + currentBuild.result
               if (RC>0) {
                 currentBuild.result = "UNSTABLE"
                 bat """@chcp 65001>nul
-                  Set src=${DT.replaceAll( /\//, "\\" )}
+                  Set src=${DT.replaceAll( /\//, "\\\\" )}
                   Set trg=${NetPath}\${DTfile}
                   if exist %trg% del %trg%
                   @echo ################# [RC:${RC}] ####################
@@ -166,9 +166,9 @@ echo ">>>>>>>>> " + currentBuild.result
                   @echo #############################################
                 """
               } else {
-               echo "##### " + DT.replaceAll( /\//, "\\" ) + " #####"
+               echo "##### " + DT.replaceAll( /\//, "\\\\" ) + " #####"
                bat """@chcp 65001>nul
-                   del ${DT.replaceAll( /\//, "\\" )}
+                   del ${DT.replaceAll( /\//, "\\\\" )}
                """
               }
             }
