@@ -30,9 +30,10 @@ if not exist %2 (
 	echo НЕ УДАЛОСЬ ПОДКЛЮЧИТЬ ДИСК %2
         exit 5
 )
-
-echo xcopy /V /I /Y /Z /F /R %fn% %2
-xcopy /V /I /Y /Z /F /R  %fn% %2
+Set dest=%2\%~nx1
+if exist %dest% del %dest%
+echo xcopy /V /I /Y /Z /F /R %fn% %dest%
+xcopy /V /I /Y /Z /F /R  %fn% %dest%
 
 exit %ERRORLEVEL%
 
