@@ -33,9 +33,10 @@ if not exist %2 (
 Set dest=%2\%~nx1
 if exist %dest% del %dest%
 
-echo xcopy /V /I /Y /Z /F /R %fn% %dest%
+echo xcopy /Y /Z /L %fn% %dest%
 cd.>>%dest%
-echo f|xcopy /V /I /Y /Z /F /R  %fn% %dest%
+::echo f|xcopy /V /I /Y /Z /F /R  %fn% %dest%
+xcopy /Y /Z /L %fn% %dest%
 
 exit %ERRORLEVEL%
 
