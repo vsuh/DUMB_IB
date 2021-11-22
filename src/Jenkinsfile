@@ -43,8 +43,10 @@ pipeline {
               echo "command: " + command
             }
             try {
+              currentBuild.result = "SUCCESS"
               bat "@chcp 65001>nul\n${command}"
             } catch ( Exception e ) {
+              currentBuild.result = "1.ERROR"
               echo "ОШИБКА: " + e.toString()
             }
           }
@@ -91,12 +93,13 @@ pipeline {
                         script: "@chcp 65001>nul \n ${command}"
                   }
                 } catch ( Exception e ) {
+                  currentBuild.result = "2.UNSTABLE(try)"
                   echo "ОШИБКА: " + e.toString()
                 }
                 NOTE = "попыток: ${i.toString()}; RC: ${RETURN_STATUS}"
                 echo "))))) " + NOTE
                 if ( RETURN_STATUS > 0 ) {
-                  currentBuild.result = "UNSTABLE"
+                  currentBuild.result = "2.UNSTABLE(RC)"
                   throw new Exception("Throw to retry unloading")
                 }
               }
@@ -126,7 +129,7 @@ echo ">>>>>>>>> " + currentBuild.result + " --- " + NOTE
                 ${StrCommand} """
             }
             if (RC>0) {
-              currentBuild.result = "UNSTABLE"
+              currentBuild.result = "3.UNSTABLE"
               bat """@chcp 65001>nul
               @echo ################# [RC:${RC}] ####################
               @type log\\updateCf.log
@@ -156,7 +159,7 @@ echo ">>>>>>>>> " + currentBuild.result
               }
 
               if (RC>0) {
-                currentBuild.result = "UNSTABLE"
+                currentBuild.result = "4.UNSTABLE"
                 bat """@chcp 65001>nul
                   Set src=${DT.replaceAll( /\//, "\\\\" )}
                   Set trg=${NetPath}\\${DTfile}
