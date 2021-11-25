@@ -47,7 +47,7 @@ if exist %dest% (
 :: create empty file on target side
 :: cd.>>%dest%
 @echo [CP]: COPY /Z /Y /V %fn% %dest%
-copy /Z /Y /V %fn% %dest%
+>nul copy /Z /Y /V %fn% %dest% 
 Set /a err=ERRORLEVEL
 :: query created file size
 for %%I in (%dest%) do Set /a sz=%%~zI
@@ -56,7 +56,7 @@ for %%I in (%dest%) do Set /a sz=%%~zI
 if %sz% EQU 0 set err=9
 :: delete old files
 @echo [CP:] delete dt files older than %deleteAge% days from %root% folder 
->nul Forfiles -p %root% -m *.dt -d -%deleteAge% -c "cmd /c del /q @path"
+2>nul Forfiles -p %root% -m *.dt -d -%deleteAge% -c "cmd /c del /q @path"
 
 exit %err%
 :: *************************** ::
