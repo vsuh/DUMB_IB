@@ -43,7 +43,7 @@ if exist %dest% (
 	@echo [CP]: target file "%dest%" exists - delete it
 	del %dest%
 )
-
+timeout 30
 :: create empty file on target side
 cd.>>%dest%
 @echo [CP]: COPY %fn% %dest%
