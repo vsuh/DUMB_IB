@@ -2,13 +2,12 @@
 ::chcp 65001>nul 
 cd %~dp0\..
 
+Set deleteAge=3
 
 if !%1!==!! (
 	echo ТРЕБУЕТСЯ ПАРАМЕТР 1 - ПОЛНОЕ ИМЯ ФАЙЛА
 	exit 3
 )
-Set fn=%1
-Set fn=%fn:/=\%
 if !%2!==!! (
 	echo ТРЕБУЕТСЯ ПАРАМЕТР 2 - СЕТЕВОЙ КАТАЛОГ
 	exit 3
@@ -30,30 +29,31 @@ if not exist %2 (
 	echo НЕ УДАЛОСЬ ПОДКЛЮЧИТЬ ДИСК %2
         exit 5
 )
-
+:: src filename with path slashes normalized
+Set fn=%1
+Set fn=%fn:/=\%
+@echo [CP]: got source file name: "%fn%"
 Set dest=%2\%~nx1
+@echo [CP]: got target full name: "%dest%"
 Set root=%~dp1
-Set nmpt=%~n1
-Set nmpt=%nmpt:~10,%
+@echo [CP]: got src folder name: "%root%"
+
+
 if exist %dest% del %dest%
 
-echo xcopy /Y /Z /L %fn% %dest%
+:: create empty file on target side
 cd.>>%dest%
-::echo f|xcopy /V /I /Y /Z /F /R  %fn% %dest%
-xcopy /Y /Z /L %fn% %dest%
+@echo [CP]: xcopy /Y /Z /F /L %fn% %dest%
+xcopy /Y /Z /F /L %fn% %dest%
+Set /a err=ERRORLEVEL
+:: query created file size
+for %%I in (%dest%) do Set /a sz=%%~zI
+@echo [CP]: size of copied %dest% file %sz%
+:: set errorlevel if empty file 
+if %sz% EQU 0 set err=9
+:: delete old files
+@echo [CP:] delete dt files older than %deleteAge% days from %root% folder 
+Forfiles -p %root% -m *.dt -d -%deleteAge% -c "cmd /c del /q @path"
 
-exit %ERRORLEVEL%
-
-:: удаление старых файлов выгрузок
-FOR %%A in (%root%\*.dt) DO (
-	FOR /F %%K IN ("%%~tA") DO (
-		FOR /F "delims=. tokens=1-3" %%X in ("%%K") DO SET /a fd=%%Z+%%Y*12*40+%%X
-		SET /a df=!td!-!fd!
-		IF !df! GEQ %kep% del %%A
-		)
-	)
-
-
-
-exit %ERRORLEVEL%
+exit %err%
 
