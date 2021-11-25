@@ -39,7 +39,10 @@ Set root=%~dp1
 ::--@echo [CP]: got src folder name: "%root%"
 
 
-if exist %dest% del %dest%
+if exist %dest% (
+	@echo [CP]: target file "%dest%" exists - delete it
+	del %dest%
+)
 
 :: create empty file on target side
 cd.>>%dest%
