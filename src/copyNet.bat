@@ -56,7 +56,7 @@ for %%I in (%dest%) do Set /a sz=%%~zI
 if %sz% EQU 0 set err=9
 :: delete old files
 @echo [CP:] delete dt files older than %deleteAge% days from %root% folder 
-Forfiles -p %root% -m *.dt -d -%deleteAge% -c "cmd /c del /q @path"
+>nul Forfiles -p %root% -m *.dt -d -%deleteAge% -c "cmd /c del /q @path"
 
 exit %err%
 :: *************************** ::
