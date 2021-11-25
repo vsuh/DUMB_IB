@@ -57,6 +57,6 @@ if %sz% EQU 0 set err=9
 :: delete old files
 @echo [CP:] delete dt files older than %deleteAge% days from %root% folder 
 Forfiles -p %root% -m *.dt -d -%deleteAge% -c "cmd /c del /q @path"
-
+timeout 30
 exit %err%
-
+:: *************************** ::
