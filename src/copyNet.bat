@@ -46,8 +46,8 @@ if exist %dest% (
 
 :: create empty file on target side
 cd.>>%dest%
-@echo [CP]: xcopy /Y /Z /F %fn% %dest%
-xcopy /Y /Z /F %fn% %dest%
+@echo [CP]: xcopy /Y /F %fn% %dest%
+xcopy /Y /F %fn% %dest%
 Set /a err=ERRORLEVEL
 :: query created file size
 for %%I in (%dest%) do Set /a sz=%%~zI
