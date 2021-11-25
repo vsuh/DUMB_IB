@@ -32,23 +32,23 @@ if not exist %2 (
 :: src filename with path slashes normalized
 Set fn=%1
 Set fn=%fn:/=\%
-@echo [CP]: got source file name: "%fn%"
+::--@echo [CP]: got source file name: "%fn%"
 Set dest=%2\%~nx1
-@echo [CP]: got target full name: "%dest%"
+::--@echo [CP]: got target full name: "%dest%"
 Set root=%~dp1
-@echo [CP]: got src folder name: "%root%"
+::--@echo [CP]: got src folder name: "%root%"
 
 
 if exist %dest% del %dest%
 
 :: create empty file on target side
 cd.>>%dest%
-@echo [CP]: xcopy /Y /Z /F /L %fn% %dest%
-xcopy /Y /Z /F /L %fn% %dest%
+@echo [CP]: xcopy /Y /Z /F %fn% %dest%
+xcopy /Y /Z /F %fn% %dest%
 Set /a err=ERRORLEVEL
 :: query created file size
 for %%I in (%dest%) do Set /a sz=%%~zI
-@echo [CP]: size of copied %dest% file %sz%
+::--@echo [CP]: size of copied %dest% file %sz%
 :: set errorlevel if empty file 
 if %sz% EQU 0 set err=9
 :: delete old files
