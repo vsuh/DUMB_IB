@@ -10,7 +10,7 @@ if !%3!==!! (
 )
 Set log=%3
 if exist %log% del %log%
-Set cmd=config /UC%2 /IBConnectionString %1 /UpdateDBCfg -Server -Dynamic–  /DisableStartupMessages /DisableStartupDialogs /out %3
+Set cmd=config /UC%2 /IBConnectionString %1 /UpdateDBCfg -Server -Dynamic–  /DisableStartupMessages /DisableStartupDialogs /out %log%
 
 echo 1cv8.exe %cmd%
 "%root1c%\%ver1c%\bin\1cv8.exe" %cmd%

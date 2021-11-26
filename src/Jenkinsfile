@@ -169,10 +169,8 @@ echo ">>>>>>>>> " + currentBuild.result
                   @echo #############################################
                 """
               } else {
-               echo "##### " + DT.replaceAll( /\//, "\\\\" ) + " #####"
-               bat """@chcp 65001>nul
-                   del ${DT.replaceAll( /\//, "\\\\" )}
-               """
+               // TODO: если размер файла > 0 и дата файла сегодня
+                currentBuild.result = "SUCCESS"
               }
             }
 echo ">>>>>>>>> " + currentBuild.result
