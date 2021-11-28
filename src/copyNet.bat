@@ -48,9 +48,9 @@ if exist %dest% (
 :: cd.>>%dest%
 @echo [CP]: COPY /Z /Y /V %fn% %dest%
 >nul copy /Z /Y /V %fn% %dest% 
-Set /a err=ERRORLEVEL
+Set err=%ERRORLEVEL%
 :: query created file size
-for %%I in (%dest%) do Set /a sz=%%~zI
+for %%I in (%dest%) do Set /a sz=%%~zI/1024
 ::--@echo [CP]: size of copied %dest% file %sz%
 :: set errorlevel if empty file 
 if %sz% EQU 0 set err=9
