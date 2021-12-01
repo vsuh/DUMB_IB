@@ -97,10 +97,12 @@ pipeline {
                   echo "ОШИБКА: " + e.toString()
                 }
                 NOTE = "попыток: ${i.toString()}; RC: ${RETURN_STATUS}"
-                echo "))))) " + NOTE
+                
                 if ( RETURN_STATUS > 0 ) {
                   currentBuild.result = "2.UNSTABLE(RC)"
                   throw new Exception("Throw to retry unloading")
+                } else {
+                  currentBuild.result = "SUCCESS"
                 }
               }
             }

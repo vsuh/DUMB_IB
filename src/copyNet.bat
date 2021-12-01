@@ -51,7 +51,7 @@ if exist %dest% (
 Set err=%ERRORLEVEL%
 :: query created file size
 ::for %%I in (%dest%) do Set /a sz=%%~zI/1024
-forfiles /m %dest% /c "cmd.exe /c if @fsize==0 cd.>EMPTYFILE.%dest%"
+forfiles /m %fn% /c "cmd.exe /c if @fsize==0 cd.>EMPTYFILE.%dest%"
 ::--@echo [CP]: size of copied %dest% file %sz%
 :: set errorlevel if empty file 
 if EXIST EMPTYFILE.%dest% set err=9
