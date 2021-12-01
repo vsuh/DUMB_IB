@@ -60,7 +60,7 @@ pipeline {
       steps {
         script {
 
-          def TIMES = [mc_bnu: 7200, mc_zup: 3600, mc_uat: 600, mc_zup_111: 600]
+          def TIMES = [mc_bnu: 7200, mc_zup: 3600, mc_uat: 600, mc_zup_111: 3600]
           timeoutValue = TIMES[ib]
 
           withCredentials([usernamePassword(credentialsId: 'IBadmin'
