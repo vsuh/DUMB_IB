@@ -50,10 +50,11 @@ if exist %dest% (
 >nul copy /Z /Y /V %fn% %dest% 
 Set err=%ERRORLEVEL%
 :: query created file size
-for %%I in (%dest%) do Set /a sz=%%~zI/1024
+::for %%I in (%dest%) do Set /a sz=%%~zI/1024
+forfiles /m %dest% /c "cmd.exe /c if @fsize==0 cd.>EMPTYFILE.%dest%"
 ::--@echo [CP]: size of copied %dest% file %sz%
 :: set errorlevel if empty file 
-if %sz% EQU 0 set err=9
+if EXIST EMPTYFILE.%dest% set err=9
 :: delete old files
 @echo [CP:] delete dt files older than %deleteAge% days from %root% folder 
 Set cmd="cmd.exe /c @del /q @path & @echo delete old (%deleteAge%d.) file @path [@fdate]"
