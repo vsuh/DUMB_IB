@@ -68,7 +68,8 @@ pipeline {
             , usernamePassword(credentialsId: 'ClusterAdmin', passwordVariable: 'clPASSWD'
             , usernameVariable: 'clADMIN')]) {
 
-            command = """vrunner dump ${DT} 
+            command = """echo ""___~___"" >>DUMP.LOG
+            vrunner dump ${DT} 
               --ibconnection /s${CLADDR}\\${ib}
               --cluster-admin ${clADMIN} --cluster-pwd ${clPASSWD}
               --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
@@ -79,8 +80,7 @@ pipeline {
             """.replaceAll( /\n\s*/, " " )
 
             if ( DEBUG == true ) { 
-              bat ">>DUMP.LOG echo ___~___
-              echo "+ command + " > COMMAND.2.txt" 
+              bat "echo "+ command + " > COMMAND.2.txt" 
               echo "command: " + command
             }
             RETURN_STATUS = 1
