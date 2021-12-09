@@ -223,7 +223,7 @@ echo ">>>>>>>>> " + currentBuild.result
     }}
     unsuccessful { script {
 
-        notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками ${NOTE} (${currentBuild.durationString}) [${currentBuild.result}] ${BUILD_URL}console" + ERRORS, 
+        notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками <i>${NOTE}</i> (${currentBuild.durationString}) [${currentBuild.result}] ${BUILD_URL}console ${ERRORS}", 
           token: notyfyToken, title: "<b>${ib}</b> Неудача", attachBuildLog: true, level: "error"
     }}
   }
