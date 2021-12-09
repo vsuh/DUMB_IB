@@ -62,7 +62,10 @@ IF NOT EXIST %trg.fullpath% (
 	)
 
 :: set errorlevel if empty or absent file just copied
-if EXIST EMPTYFILE. %trg.fullpath% set err=9
+if EXIST EMPTYFILE.%src.fn% (
+	set err=9
+	del EMPTYFILE.%src.fn%
+)
 :: delete old local DT-files
 @echo [CP:] delete dt files older than %deleteAge% days from %src.root% folder 
 Set cmd="cmd.exe /c @del /q @path & @echo delete old (%deleteAge%d.) file @path [@fdate]"
