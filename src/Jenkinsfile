@@ -68,7 +68,7 @@ pipeline {
             , usernamePassword(credentialsId: 'ClusterAdmin', passwordVariable: 'clPASSWD'
             , usernameVariable: 'clADMIN')]) {
 
-            command = """echo ""___~___"" >>DUMP.LOG
+            command = """
             vrunner dump ${DT} 
               --ibconnection /s${CLADDR}\\${ib}
               --cluster-admin ${clADMIN} --cluster-pwd ${clPASSWD}
@@ -91,6 +91,7 @@ pipeline {
                 currentBuild.result = "SUCCESS"
                 break
               } else {
+                bat "echo ___~___ >>DUMP.LOG"
                 echo ">>> ПОПЫТКА " + i.toString() + " timeout: ${timeoutValue} s. <<<"
                 try {
                   timeout ( time: timeoutValue, unit: 'SECONDS' ) {
