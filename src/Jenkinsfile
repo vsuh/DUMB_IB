@@ -91,10 +91,11 @@ pipeline {
                 currentBuild.result = "SUCCESS"
                 break
               } else {
-                FPlog = new FilePath(Jenkins.getInstanceOrNull().getComputer(env.NODE_NAME).getChannel(), "DUMP.LOG")
-                println FPlog
-                log = FPlog.toFile()
-                println log
+                // FPlog = new FilePath(Jenkins.getInstanceOrNull().getComputer(env.NODE_NAME).getChannel(), "DUMP.LOG")
+                // println FPlog
+                // log = FPlog.toFile()
+                // println log
+                File log = new File("DUMP.LOG")
                 if log.exists() {
                   print "delete" + log
                   final String content = readFile(file: "DUMP.LOG")
