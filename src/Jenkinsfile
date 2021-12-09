@@ -79,7 +79,7 @@ pipeline {
             """.replaceAll( /\n\s*/, " " )
 
             if ( DEBUG == true ) { 
-              bat ">>DUMP.LOG echo #~#~#
+              bat ">>DUMP.LOG echo ___~___
               echo "+ command + " > COMMAND.2.txt" 
               echo "command: " + command
             }
