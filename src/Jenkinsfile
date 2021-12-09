@@ -5,7 +5,7 @@ pipeline {
   environment {
     Util = load './lib/Utils.groovy'  // Библиотека
     ib = "${JOB_BASE_NAME}"           // Имя информационной базы
-    DEBUG = false                     // Режим отладки
+    DEBUG = true                      // Режим отладки
     CLADDR = 'obr-app-11'             // Адрес кластера 1С
     DTpath = 'C:/1c/dt'               // Каталог выгрузки dt файлов
     VER1C = '8.3.18.1483'             // Версия платформы 1С
