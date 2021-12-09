@@ -223,10 +223,9 @@ echo ">>>>>>>>> " + currentBuild.result
         //   token: notyfyToken, title: "Успешно", level: "success"
     }}
     unsuccessful { script {
-
+        int limit = 2200
         notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками <i>${NOTE}</i> (${currentBuild.durationString}) [${currentBuild.result}] ${BUILD_URL}console " 
-        + msg_ERR.length() <= limit ? msg_ERR : '...'+msg_ERR.substring(msg_ERR.length() - limit)
-        , token: notyfyToken, title: "<b>${ib}</b> Неудача", attachBuildLog: true, level: "error"
+        + msg_ERR.length() <= limit ? msg_ERR : '...'+msg_ERR.substring(msg_ERR.length() - limit), token: notyfyToken, title: "<b>${ib}</b> Неудача", attachBuildLog: true, level: "error"
     }}
   }
 }
