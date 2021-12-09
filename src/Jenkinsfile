@@ -17,7 +17,7 @@ pipeline {
 
     NetPath = "\\\\10.51.8.10\\Backups\\1C_BACKUPS\\${ib}"    // Сетевой каталог для резервных копий
 
-    NOTE = "Start"               // Буферная переменная (не исп.)
+    NOTE = "Start"               // Буферная переменная
   }
   options {
     disableConcurrentBuilds()
@@ -72,6 +72,7 @@ pipeline {
               --uccode ${SessEnblCode} 
               --v8version ${VER1C}
               --debuglog
+              --debuglogfile DUMP.LOG
             """.replaceAll( /\n\s*/, " " )
 
             if ( DEBUG == true ) { 
@@ -99,6 +100,8 @@ pipeline {
                 NOTE = "попыток: ${i.toString()}; RC: ${RETURN_STATUS}"
                 
                 if ( RETURN_STATUS > 0 ) {
+                  final String content = readFile(file: "DUMP.LOG")
+                  echo "================\n${content}\n================"
                   currentBuild.result = "2.UNSTABLE(RC)"
                   throw new Exception("Throw to retry unloading")
                 } else {
@@ -209,8 +212,8 @@ echo ">>>>>>>>> " + currentBuild.result
     } }
     success {script{
 
-        notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно ${NOTE} (${currentBuild.durationString}) ${BUILD_URL}console",
-          token: notyfyToken, title: "Успешно", level: "success"
+        // notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно ${NOTE} (${currentBuild.durationString}) ${BUILD_URL}console",
+        //   token: notyfyToken, title: "Успешно", level: "success"
     }}
     unsuccessful { script {
 
