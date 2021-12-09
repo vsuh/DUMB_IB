@@ -71,7 +71,6 @@ pipeline {
             command = """
             vrunner dump ${DT} 
               --ibconnection /s${CLADDR}\\${ib}
-              --cluster-admin ${clADMIN} --cluster-pwd ${clPASSWD}
               --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
               --uccode ${SessEnblCode} 
               --v8version ${VER1C}
