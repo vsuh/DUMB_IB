@@ -211,7 +211,7 @@ echo ">>>>>>>>> " + currentBuild.result
 echo ">>>>>>>>> " + currentBuild.result
     } }
     success {script{
-
+        echo "SUCCESS"
         // notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена успешно ${NOTE} (${currentBuild.durationString}) ${BUILD_URL}console",
         //   token: notyfyToken, title: "Успешно", level: "success"
     }}
