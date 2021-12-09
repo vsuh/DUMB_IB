@@ -91,7 +91,9 @@ pipeline {
                 currentBuild.result = "SUCCESS"
                 break
               } else {
-                bat "echo ___~___ >>DUMP.LOG"
+                final String content = readFile(file: "DUMP.LOG")
+                msg_ERR = "\n2.DUMP:\n${content}"
+                bat "del DUMP.LOG"
                 echo ">>> ПОПЫТКА " + i.toString() + " timeout: ${timeoutValue} s. <<<"
                 try {
                   timeout ( time: timeoutValue, unit: 'SECONDS' ) {
@@ -106,8 +108,6 @@ pipeline {
                 NOTE = "попыток: ${i.toString()}; RC: ${RETURN_STATUS}"
                 
                 if ( RETURN_STATUS > 0 ) {
-                  final String content = readFile(file: "DUMP.LOG")
-                  msg_ERR = msg_ERR + "\n2.DUMP:\n${content}"
                   currentBuild.result = "2.UNSTABLE(RC)"
                   throw new Exception("Throw to retry unloading")
                 } else {
