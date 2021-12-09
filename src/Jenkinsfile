@@ -3,22 +3,20 @@ import hudson.FilePath
 pipeline {
   agent{ label 'mini' }
   environment {
-    Util = load './lib/Utils.groovy'
-    ib = "${JOB_BASE_NAME}"   // Имя информационной базы
-    DEBUG = false             // Режим отладки
-    CLADDR = 'obr-app-11'     // Адрес кластера 1С
-    DTpath = 'C:/1c/dt'       // Каталог выгрузки dt файлов
-    VER1C = '8.3.18.1483'     // Версия платформы 1С
-    SessEnblCode = '0008'           // Код разрешения сеанса
+    Util = load './lib/Utils.groovy'  // Библиотека
+    ib = "${JOB_BASE_NAME}"           // Имя информационной базы
+    DEBUG = false                     // Режим отладки
+    CLADDR = 'obr-app-11'             // Адрес кластера 1С
+    DTpath = 'C:/1c/dt'               // Каталог выгрузки dt файлов
+    VER1C = '8.3.18.1483'             // Версия платформы 1С
+    SessEnblCode = '0008'             // Код разрешения сеанса
     notyfyToken = '2djDy2SkydHJ-pE1b1cp5QaBy73yGPXx'
     DPart = Util.formatDate(Util.TimeNow(), 'yyyy-MM-dd')  // Часть имени DT файла
-    DTfile = "${DPart}_${ib}.dt" // Имя DT файла
-    DT = "${DTpath}/${DTfile}"   // Полный путь к DT файлу
-
+    DTfile = "${DPart}_${ib}.dt"      // Имя DT файла
+    DT = "${DTpath}/${DTfile}"        // Полный путь к DT файлу
     NetPath = "\\\\10.51.8.10\\Backups\\1C_BACKUPS\\${ib}"    // Сетевой каталог для резервных копий
-
-    NOTE = "Start"               // Буферная переменная
-    msg_ERR = ""
+    NOTE = "Start"                    // Буферная переменная
+    msg_ERR = "~"                     // Сообщения об ошибках в телеграм месседж
   }
   options {
     disableConcurrentBuilds()
