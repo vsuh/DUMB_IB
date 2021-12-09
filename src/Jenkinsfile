@@ -64,10 +64,13 @@ pipeline {
           timeoutValue = TIMES[ib]
 
           withCredentials([usernamePassword(credentialsId: 'IBadmin'
-            , passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
+            , passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')
+            , usernamePassword(credentialsId: 'ClusterAdmin', passwordVariable: 'clPASSWD'
+            , usernameVariable: 'clADMIN')]) {
 
             command = """vrunner dump ${DT} 
               --ibconnection /s${CLADDR}\\${ib}
+              --cluster-admin ${clADMIN} --cluster-pwd ${clPASSWD}
               --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
               --uccode ${SessEnblCode} 
               --v8version ${VER1C}
@@ -122,7 +125,7 @@ echo ">>>>>>>>> " + currentBuild.result + " --- " + NOTE
     stage ('3. Обновление кофигурации') {
       steps { script {
           withCredentials([usernamePassword(credentialsId: 'IBadmin'
-              , passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')]) {
+              , passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN'),]) {
             def conn = '"Srvr=""'+CLADDR+'"";Ref=""'+ib+'"";Usr=""'+ibADMIN+'"";Pwd=""'+ibPASSWORD+'"";"'
             def StrCommand = "src/updateCf.bat " + conn + " " + SessEnblCode + " log\\updateCf.log"
             if ( DEBUG == true ) {
