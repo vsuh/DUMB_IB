@@ -18,6 +18,7 @@ pipeline {
     NetPath = "\\\\10.51.8.10\\Backups\\1C_BACKUPS\\${ib}"    // Сетевой каталог для резервных копий
 
     NOTE = "Start"               // Буферная переменная
+    ERRORS = ""
   }
   options {
     disableConcurrentBuilds()
@@ -46,6 +47,7 @@ pipeline {
               currentBuild.result = "SUCCESS"
               bat "@chcp 65001>nul\n${command}"
             } catch ( Exception e ) {
+              ERRORS = ERRORS + "\n1.LOCK_IB:\n" + e.toString()
               currentBuild.result = "1.ERROR"
               echo "ОШИБКА: " + e.toString()
             }
@@ -94,6 +96,7 @@ pipeline {
                         script: "@chcp 65001>nul \n ${command}"
                   }
                 } catch ( Exception e ) {
+                  ERRORS = ERRORS + "\n2.DUMP:\n" + e.toString()
                   currentBuild.result = "2.UNSTABLE(try)"
                   echo "ОШИБКА: " + e.toString()
                 }
@@ -101,7 +104,7 @@ pipeline {
                 
                 if ( RETURN_STATUS > 0 ) {
                   final String content = readFile(file: "DUMP.LOG")
-                  echo "================\n${content}\n================"
+                  ERRORS = ERRORS + "\n2.DUMP:\n${content}"
                   currentBuild.result = "2.UNSTABLE(RC)"
                   throw new Exception("Throw to retry unloading")
                 } else {
@@ -134,6 +137,8 @@ echo ">>>>>>>>> " + currentBuild.result + " --- " + NOTE
                 ${StrCommand} """
             }
             if (RC>0) {
+              final String content = readFile(file: "log\\updateCf.log")
+              ERRORS = ERRORS + "\n3.UPDATE:\n${content}"
               currentBuild.result = "3.UNSTABLE"
               bat """@chcp 65001>nul
               @echo ################# [RC:${RC}] ####################
@@ -165,6 +170,7 @@ echo ">>>>>>>>> " + currentBuild.result
 
               if (RC>0) {
                 currentBuild.result = "4.UNSTABLE"
+                ERRORS = ERRORS + "\n4.COPY:\nОшибка копирования ${DT} --> ${NetPath}"
                 bat """@chcp 65001>nul
                   Set src=${DT.replaceAll( /\//, "\\\\" )}
                   Set trg=${NetPath}\\${DTfile}
@@ -217,7 +223,7 @@ echo ">>>>>>>>> " + currentBuild.result
     }}
     unsuccessful { script {
 
-        notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками ${NOTE} (${currentBuild.durationString}) [${currentBuild.result}] ${BUILD_URL}console", 
+        notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками ${NOTE} (${currentBuild.durationString}) [${currentBuild.result}] ${BUILD_URL}console" + ERRORS, 
           token: notyfyToken, title: "<b>${ib}</b> Неудача", attachBuildLog: true, level: "error"
     }}
   }
