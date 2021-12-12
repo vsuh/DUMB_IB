@@ -65,11 +65,12 @@ IF NOT EXIST %trg.fullpath% (
 :: set errorlevel if empty or absent file just copied
 echo checking error flag EMPTYFILE.%src.fn%
 if EXIST EMPTYFILE.%src.fn% (
+	echo flag EMPTYFILE.%src.fn% found. exit with RC=9
 	set err=9
 	del EMPTYFILE.%src.fn%
 )
-echo checking error flag --- EMPTYFILE4.%src.fn%
 if EXIST X-NO-FILE.%src.fn% (
+	echo flag X-NO-FILE.%src.fn% found. exit with RC=7
 	set err=7
 	del X-NO-FILE.%src.fn%
 )
