@@ -52,7 +52,7 @@ if exist  %trg.fullpath% (
 :: create empty file on target side
 :: cd.>> %trg.fullpath%
 @echo [CP]: xCOPY /Z /Y /L %src.path%  %trg.fullpath%
-xcopy /Y /L %src.path%  %trg.fullpath% 
+echo f|xcopy /Y /L %src.path%  %trg.fullpath% 
 Set err=%ERRORLEVEL%
 :: query created file size
 echo checking existance of new file: %trg.fullpath%
