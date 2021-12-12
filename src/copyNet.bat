@@ -3,7 +3,7 @@ goto top
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :top
-::chcp 65001>nul 
+chcp 65001>nul 
 cd %~dp0\..
 
 Set deleteAge=3
@@ -52,7 +52,7 @@ if exist  %trg.fullpath% (
 :: create empty file on target side
 :: cd.>> %trg.fullpath%
 @echo [CP]: xCOPY /Z /Y /L %src.path%  %trg.fullpath%
-xcopy /Z /Y /L %src.path%  %trg.fullpath% 
+xcopy /Y /L %src.path%  %trg.fullpath% 
 Set err=%ERRORLEVEL%
 :: query created file size
 echo checking existance of new file: %trg.fullpath%
