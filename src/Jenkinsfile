@@ -169,7 +169,7 @@ echo ">>>>>>>>> " + currentBuild.result
       steps { script {
             withCredentials([usernamePassword(credentialsId: 'goblin_moscollector'
                 , passwordVariable: 'pasw', usernameVariable: 'user')]) {
-              def StrCommand = "src/copyNet.bat ${DT} ${NetPath} ${user} ${pasw}"
+              def StrCommand = """src/copyNet.bat ${DT.replaceAll( /\//, "\\\\" )} ${NetPath} ${user} ${pasw}"""
               if ( DEBUG == true ) {
                 bat "echo "+ StrCommand + " > COMMAND.4.txt"
                 echo "command: " + StrCommand
