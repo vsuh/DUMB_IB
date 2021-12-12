@@ -55,16 +55,23 @@ if exist  %trg.fullpath% (
 >nul copy /Z /Y /V %src.path%  %trg.fullpath% 
 Set err=%ERRORLEVEL%
 :: query created file size
+echo checking existance of new file: %trg.fullpath%
 IF NOT EXIST %trg.fullpath% ( 
-		cd.>EMPTYFILE.%src.fn%
+		cd.>EMPTYFILE4.%src.fn%
 	) ELSE (
 		2>nul forfiles /p %2 %/m %src.fn% /c "cmd.exe /c if @fsize==0 cd.>EMPTYFILE.%src.fn%
 	)
 
 :: set errorlevel if empty or absent file just copied
+echo checking error flag EMPTYFILE.%src.fn%
 if EXIST EMPTYFILE.%src.fn% (
 	set err=9
 	del EMPTYFILE.%src.fn%
+)
+echo checking error flag --- EMPTYFILE4.%src.fn%
+if EXIST EMPTYFILE4.%src.fn% (
+	set err=7
+	del EMPTYFILE4.%src.fn%
 )
 :: delete old local DT-files
 @echo [CP:] delete dt files older than %deleteAge% days from %src.root% folder 
