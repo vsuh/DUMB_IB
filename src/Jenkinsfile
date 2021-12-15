@@ -42,8 +42,8 @@ pipeline {
               echo "command: " + command
             }
             try {
-              currentBuild.result = "SUCCESS"
               bat "@chcp 65001>nul\n${command}"
+              currentBuild.result = "SUCCESS"
             } catch ( Exception e ) {
               msg_ERR = msg_ERR + "\n1.LOCK_IB:\n" + e.toString()
               currentBuild.result = "1.ERROR"
