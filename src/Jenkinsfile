@@ -130,8 +130,11 @@ pipeline {
           pt = new FilePath(Jenkins.getInstanceOrNull().getComputer(env.NODE_NAME).getChannel(), dt)
           dtSize = (double)pt.length()/(1024*1024)
           dtSize = dtSize.round().toString() + ' mb.'
+          if ( dtSize > 0 ) {
+            currentBuild.result = 'SUCCESS'
+          }
           NOTE = "Выгрузка ИБ ${CLADDR}\\${ib} в файл ${DTfile} (${dtSize}) " + NOTE
-echo ">>>>>>>>> " + currentBuild.result + " --- " + NOTE
+          echo ">>>>>>>>> " + currentBuild.result + " --- " + NOTE
        }
       }
     }
