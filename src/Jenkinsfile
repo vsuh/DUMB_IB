@@ -132,8 +132,8 @@ pipeline {
           if ( dtSize > 0 ) {
             currentBuild.result = 'SUCCESS'
           }
-          dtSize = dtSize.round().toString() + ' mb.'
-          NOTE = "Выгрузка ИБ ${CLADDR}\\${ib} в файл ${DTfile} (${dtSize}) " + NOTE
+          dtSizeStr = dtSize.round().toString() + ' mb.'
+          NOTE = "Выгрузка ИБ ${CLADDR}\\${ib} в DT файл ${DTfile} (${dtSizeStr}) " + NOTE
           echo ">>>>>>>>> " + currentBuild.result + " --- " + NOTE
        }
       }
