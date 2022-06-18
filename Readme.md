@@ -8,7 +8,7 @@
 4. Копирование DT файла выгрузки на сетевое хранилище  
 P. Вне зависимости от успешности шагов, с ИБ снимается блокировка сеансов и регламентных заданий. Результат работы отправляется в [telegram](https://telegram.org/) с помощью плагина [Notify.Events](https://plugins.jenkins.io/notify-events)
 
-> Имя информационной базы для выгрузки берется из переменной окружения `JOB_BASE_NAME`, поэтому название задания Jenkins должно соответствовать имени выгружаемой ИБ. Сервер приложений всегда `obr-app-11` (переменная [`CLADDR`](https://github.com/vsuh/DUMB_IB/blob/6dd00375771e77c3490916c6bdb01c02ff387427/src/Jenkinsfile#L9) в начале [Jenkinsfile]())
+> Имя информационной базы для выгрузки берется из переменной окружения `JOB_BASE_NAME`, поэтому название задания Jenkins должно соответствовать имени выгружаемой ИБ. Сервер приложений всегда `obr-app-11` (переменная [`CLADDR`]([https://github.com/vsuh/DUMB_IB/blob/6dd00375771e77c3490916c6bdb01c02ff387427/src/Jenkinsfile#L9](https://github.com/vsuh/DUMB_IB/blob/acef3f81ce209c29bab2787f09e4a460d516ae6f/src/Jenkinsfile#L9)) в начале [Jenkinsfile]())
 
 > для работы с GitLab на git.moscollector.local под пользователем, 
 из-под которого выполняется jenkins агент (goblin@moscollector), 
