@@ -110,6 +110,7 @@ pipeline {
                   timeout ( time: timeoutValue, unit: 'SECONDS' ) {
                     RETURN_STATUS = bat returnStatus: true,
                         script: "@chcp 65001>nul \n ${command}"
+                    currentBuild.result = "SUCCESS"
                   }
                 } catch ( Exception e ) {
                   msg_ERR = msg_ERR + "\n2.DUMP:\n" + e.toString()
