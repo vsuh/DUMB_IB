@@ -43,16 +43,16 @@ pipeline {
             }
             try {
               bat "@chcp 65001>nul\n${command}"
-              currentBuild.result = "SUCCESS"
+              currentBuild.CurrentResult = "SUCCESS"
             } catch ( Exception e ) {
               msg_ERR = msg_ERR + "\n1.LOCK_IB:\n" + e.toString()
-              currentBuild.result = "1.ERROR"
+              currentBuild.CurrentResult = "1.ERROR"
               echo "ОШИБКА: " + e.toString()
             }
           }
         }
         script {
-          echo ">>>>>>>>> " + currentBuild.result
+          echo ">>>>>>>>> " + currentBuild.CurrentResult
         }
       }
     }
@@ -87,7 +87,7 @@ pipeline {
             retry (5) {
               i++
               if ( RETURN_STATUS == 0 ) {
-                currentBuild.result = "SUCCESS"
+                currentBuild.CurrentResult = "SUCCESS"
                 break
               } else {
                 // FPlog = new FilePath(Jenkins.getInstanceOrNull().getComputer(env.NODE_NAME).getChannel(), "DUMP.LOG")
@@ -110,20 +110,20 @@ pipeline {
                   timeout ( time: timeoutValue, unit: 'SECONDS' ) {
                     RETURN_STATUS = bat returnStatus: true,
                         script: "@chcp 65001>nul \n ${command}"
-                    currentBuild.result = "SUCCESS"
+                    currentBuild.CurrentResult = "SUCCESS"
                   }
                 } catch ( Exception e ) {
                   msg_ERR = msg_ERR + "\n2.DUMP:\n" + e.toString()
-                  currentBuild.result = "2.UNSTABLE(try)"
+                  currentBuild.CurrentResult = "2.UNSTABLE(try)"
                   echo "ОШИБКА: " + e.toString()
                 }
                 NOTE = "попыток: ${i.toString()}; RC: ${RETURN_STATUS}"
                 
                 if ( RETURN_STATUS > 0 ) {
-                  currentBuild.result = "2.UNSTABLE(RC)"
+                  currentBuild.CurrentResult = "2.UNSTABLE(RC)"
                   throw new Exception("Throw to retry unloading")
                 } else {
-                  currentBuild.result = "SUCCESS"
+                  currentBuild.CurrentResult = "SUCCESS"
                 }
               }
             }
@@ -131,11 +131,11 @@ pipeline {
           pt = new FilePath(Jenkins.getInstanceOrNull().getComputer(env.NODE_NAME).getChannel(), dt)
           dtSize = (double)pt.length()/(1024*1024)
           if ( dtSize > 0 ) {
-            currentBuild.result = 'SUCCESS'
+            currentBuild.CurrentResult = 'SUCCESS'
           }
           dtSizeStr = dtSize.round().toString() + ' mb.'
           NOTE = "Выгрузка ИБ ${CLADDR}\\${ib} в DT файл ${DTfile} (${dtSizeStr}) " + NOTE
-          echo ">>>>>>>>> " + currentBuild.result + " --- " + NOTE
+          echo ">>>>>>>>> " + currentBuild.CurrentResult + " --- " + NOTE
        }
       }
     }
@@ -157,7 +157,7 @@ pipeline {
             if (RC>0) {
               final String content = readFile(file: "log\\updateCf.log")
               msg_ERR = msg_ERR + "\n3.UPDATE:\n${content}"
-              currentBuild.result = "3.UNSTABLE"
+              currentBuild.CurrentResult = "3.UNSTABLE"
               bat """@chcp 65001>nul
               @echo ################# [RC:${RC}] ####################
               @type log\\updateCf.log
@@ -165,7 +165,7 @@ pipeline {
               """
             }
           }
-echo ">>>>>>>>> " + currentBuild.result
+echo ">>>>>>>>> " + currentBuild.CurrentResult
         }
       }
     }
@@ -187,7 +187,7 @@ echo ">>>>>>>>> " + currentBuild.result
               }
 
               if (RC>0) {
-                currentBuild.result = "4.UNSTABLE"
+                currentBuild.CurrentResult = "4.UNSTABLE"
                 msg_ERR = msg_ERR + "\n4.COPY:\nОшибка копирования ${DT} --> ${NetPath}"
                 bat """@chcp 65001>nul
                   Set src=${DT.replaceAll( /\//, "\\\\" )}
@@ -199,10 +199,10 @@ echo ">>>>>>>>> " + currentBuild.result
                 """
               } else {
                // TODO: если размер файла > 0 и дата файла сегодня
-                currentBuild.result = "SUCCESS"
+                currentBuild.CurrentResult = "SUCCESS"
               }
             }
-echo ">>>>>>>>> " + currentBuild.result
+echo ">>>>>>>>> " + currentBuild.CurrentResult
       }}
     }
 
@@ -232,7 +232,7 @@ echo ">>>>>>>>> " + currentBuild.result
                 $command"""
 
         }
-echo ">>>>>>>>> " + currentBuild.result
+echo ">>>>>>>>> " + currentBuild.CurrentResult
     } }
     success {script{
         echo "SUCCESS"
@@ -242,7 +242,7 @@ echo ">>>>>>>>> " + currentBuild.result
     unsuccessful { script {
         int limit = 1024
         String log = msg_ERR.length() <= limit ? msg_ERR : '...'+msg_ERR.substring(msg_ERR.length() - limit)
-        notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками <i>${NOTE}</i> (${currentBuild.durationString}) [${currentBuild.result}] ${BUILD_URL}console\n" + log, token: notyfyToken, title: "<b>${ib}</b> Неудача", attachBuildLog: true, level: "error"
+        notifyEvents message: "<b>${BUILD_DISPLAY_NAME}</b> Выгрузка <b>${JOB_BASE_NAME}</b> завершена с ошибками <i>${NOTE}</i> (${currentBuild.durationString}) [${currentBuild.CurrentResult}] ${BUILD_URL}console\n" + log, token: notyfyToken, title: "<b>${ib}</b> Неудача", attachBuildLog: true, level: "error"
     }}
   }
 }
