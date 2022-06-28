@@ -69,13 +69,13 @@ pipeline {
             , usernameVariable: 'clADMIN')]) {
 
             command = """
-            vrunner dump ${DT} 
+            call vrunner dump ${DT} 
               --ibconnection /s${CLADDR}\\${ib}
               --db-user ${ibADMIN} --db-pwd ${ibPASSWORD}
               --uccode ${SessEnblCode} 
               --v8version ${VER1C}
               --debuglog
-              --debuglogfile DUMP.LOG
+              --debuglogfile DUMP.LOG && exit 0
             """.replaceAll( /\n\s*/, " " )
 
             if ( DEBUG == true ) { 
