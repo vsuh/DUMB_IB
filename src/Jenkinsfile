@@ -43,10 +43,10 @@ pipeline {
             }
             try {
               bat "@chcp 65001>nul\n${command}"
-              currentBuild.CurrentResult = "SUCCESS"
+//              currentBuild.CurrentResult = "SUCCESS"
             } catch ( Exception e ) {
               msg_ERR = msg_ERR + "\n1.LOCK_IB:\n" + e.toString()
-              currentBuild.CurrentResult = "1.ERROR"
+//              currentBuild.CurrentResult = "1.ERROR"
               echo "ОШИБКА: " + e.toString()
             }
           }
@@ -87,7 +87,7 @@ pipeline {
             retry (5) {
               i++
               if ( RETURN_STATUS == 0 ) {
-                currentBuild.CurrentResult = "SUCCESS"
+//                currentBuild.CurrentResult = "SUCCESS"
                 break
               } else {
                 // FPlog = new FilePath(Jenkins.getInstanceOrNull().getComputer(env.NODE_NAME).getChannel(), "DUMP.LOG")
@@ -110,29 +110,29 @@ pipeline {
                   timeout ( time: timeoutValue, unit: 'SECONDS' ) {
                     RETURN_STATUS = bat returnStatus: true,
                         script: "@chcp 65001>nul \n ${command}"
-                    currentBuild.CurrentResult = "SUCCESS"
+//                    currentBuild.CurrentResult = "SUCCESS"
                   }
                 } catch ( Exception e ) {
                   msg_ERR = msg_ERR + "\n2.DUMP:\n" + e.toString()
-                  currentBuild.CurrentResult = "2.UNSTABLE(try)"
+//                  currentBuild.CurrentResult = "2.UNSTABLE(try)"
                   echo "ОШИБКА: " + e.toString()
                 }
                 NOTE = "попыток: ${i.toString()}; RC: ${RETURN_STATUS}"
                 
                 if ( RETURN_STATUS > 0 ) {
-                  currentBuild.CurrentResult = "2.UNSTABLE(RC)"
-                  throw new Exception("Throw to retry unloading")
-                } else {
-                  currentBuild.CurrentResult = "SUCCESS"
+//                  currentBuild.CurrentResult = "2.UNSTABLE(RC)"
+                  throw new Exception("===Throw to retry unloading===")
+//                } else {
+//                  currentBuild.CurrentResult = "SUCCESS"
                 }
               }
             }
           }
           pt = new FilePath(Jenkins.getInstanceOrNull().getComputer(env.NODE_NAME).getChannel(), dt)
           dtSize = (double)pt.length()/(1024*1024)
-          if ( dtSize > 0 ) {
-            currentBuild.CurrentResult = 'SUCCESS'
-          }
+//          if ( dtSize > 0 ) {
+//            currentBuild.CurrentResult = 'SUCCESS'
+//          }
           dtSizeStr = dtSize.round().toString() + ' mb.'
           NOTE = "Выгрузка ИБ ${CLADDR}\\${ib} в DT файл ${DTfile} (${dtSizeStr}) " + NOTE
           echo ">>>>>>>>> " + currentBuild.CurrentResult + " --- " + NOTE
@@ -157,7 +157,7 @@ pipeline {
             if (RC>0) {
               final String content = readFile(file: "log\\updateCf.log")
               msg_ERR = msg_ERR + "\n3.UPDATE:\n${content}"
-              currentBuild.CurrentResult = "3.UNSTABLE"
+//              currentBuild.CurrentResult = "3.UNSTABLE"
               bat """@chcp 65001>nul
               @echo ################# [RC:${RC}] ####################
               @type log\\updateCf.log
@@ -187,7 +187,7 @@ echo ">>>>>>>>> " + currentBuild.CurrentResult
               }
 
               if (RC>0) {
-                currentBuild.CurrentResult = "4.UNSTABLE"
+//                currentBuild.CurrentResult = "4.UNSTABLE"
                 msg_ERR = msg_ERR + "\n4.COPY:\nОшибка копирования ${DT} --> ${NetPath}"
                 bat """@chcp 65001>nul
                   Set src=${DT.replaceAll( /\//, "\\\\" )}
@@ -199,7 +199,7 @@ echo ">>>>>>>>> " + currentBuild.CurrentResult
                 """
               } else {
                // TODO: если размер файла > 0 и дата файла сегодня
-                currentBuild.CurrentResult = "SUCCESS"
+//                currentBuild.CurrentResult = "SUCCESS"
               }
             }
 echo ">>>>>>>>> " + currentBuild.CurrentResult
