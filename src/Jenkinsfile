@@ -42,7 +42,7 @@ pipeline {
               echo "command: " + command
             }
             try {
-              bat "@chcp 65001>nul\n${command}"
+              RC = bat returnStatus: true, script: "@chcp 65001>nul\n${command}"
 //              currentBuild.currentResult = "SUCCESS"
             } catch ( Exception e ) {
               msg_ERR = msg_ERR + "\n1.LOCK_IB:\n" + e.toString()
@@ -51,9 +51,7 @@ pipeline {
             }
           }
         }
-        script {
-          echo ">>>>>>>>> " + currentBuild.currentResult
-        }
+        echo ">>>>>>>>>(${RC}) " + currentBuild.currentResult
       }
     }
     stage ("2. Выгрузка ИБ в dt файл") {
