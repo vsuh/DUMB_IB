@@ -1,3 +1,4 @@
+
 import hudson.FilePath
 
 pipeline {
@@ -38,16 +39,24 @@ pipeline {
               """.replaceAll( /\n\s*/, " " )
 
             if ( DEBUG == true ) { 
-              bat 'echo  command  >COMMAND.1.txt' 
+              bat returnStatus: true, script: 'echo  command  >COMMAND.1.txt' 
               echo "command: " + command
             }
-            try {
-              RC = bat returnStatus: true, script: "@chcp 65001>nul\n${command}"
-//              currentBuild.currentResult = "SUCCESS"
-            } catch ( Exception e ) {
-              msg_ERR = msg_ERR + "\n1.LOCK_IB:\n" + e.toString()
-//              currentBuild.currentResult = "1.ERROR"
-              echo "ОШИБКА: " + e.toString()
+            RETURN_STATUS = 1
+            i = 0
+            retry (5) {
+              i++
+              if ( RETURN_STATUS == 0 ) {
+                break
+              } else {
+                echo ">>> ПОПЫТКА " + i.toString() + " timeout: ${timeoutValue} s. <<<"
+                try {
+                    RETURN_STATUS = bat returnStatus: true, script: "@chcp 65001>nul\n${command}"
+                    } catch ( Exception e ) {
+                    msg_ERR = msg_ERR + "\n1.LOCK_IB:${ib}\n" + e.toString()
+                    echo "ОШИБКА: ---------------------------\n" + e.toString() + "\n-----------------------------------"
+                    }
+               }
             }
           }
         }
@@ -244,5 +253,4 @@ echo ">>>>>>>>> " + currentBuild.currentResult
     }}
   }
 }
-
 
