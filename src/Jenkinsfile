@@ -42,6 +42,7 @@ pipeline {
               bat returnStatus: true, script: 'echo  command  >COMMAND.1.txt' 
               echo "command: " + command
             }
+            timeoutValue = 300
             RETURN_STATUS = 1
             i = 0
             retry (5) {
@@ -50,13 +51,15 @@ pipeline {
                 break
               } else {
                 echo ">>> ПОПЫТКА " + i.toString() + " timeout: ${timeoutValue} s. <<<"
-                try {
+                timeout ( time: timeoutValue, unit: 'SECONDS' ) {
+                  try {
                     RETURN_STATUS = bat returnStatus: true, script: "@chcp 65001>nul\n${command}"
-                    } catch ( Exception e ) {
+                  } catch ( Exception e ) {
                     msg_ERR = msg_ERR + "\n1.LOCK_IB:${ib}\n" + e.toString()
                     echo "ОШИБКА: ---------------------------\n" + e.toString() + "\n-----------------------------------"
-                    }
-               }
+                  }
+                }
+              }
             }
           }
         }
@@ -97,10 +100,6 @@ pipeline {
 //                currentBuild.currentResult = "SUCCESS"
                 break
               } else {
-                // FPlog = new FilePath(Jenkins.getInstanceOrNull().getComputer(env.NODE_NAME).getChannel(), "DUMP.LOG")
-                // println FPlog
-                // log = FPlog.toFile()
-                // println log
                 File log = new File("DUMP.LOG")
                 println "LOG: " + log
                 if ( log.exists() ) {
@@ -110,27 +109,21 @@ pipeline {
                   msg_ERR = "\n2.DUMP:\n${content}"
                   log.delete()
                   print "AFTER delete DUMP.LOG"
-                  // bat "del DUMP.LOG"
                 }
                 echo ">>> ПОПЫТКА " + i.toString() + " timeout: ${timeoutValue} s. <<<"
                 try {
                   timeout ( time: timeoutValue, unit: 'SECONDS' ) {
                     RETURN_STATUS = bat returnStatus: true,
                         script: "@chcp 65001>nul \n ${command}"
-//                    currentBuild.currentResult = "SUCCESS"
                   }
                 } catch ( Exception e ) {
                   msg_ERR = msg_ERR + "\n2.DUMP:\n" + e.toString()
-//                  currentBuild.currentResult = "2.UNSTABLE(try)"
                   echo "ОШИБКА: " + e.toString()
                 }
                 NOTE = "попыток: ${i.toString()}; RC: ${RETURN_STATUS}"
                 
                 if ( RETURN_STATUS > 0 ) {
-//                  currentBuild.currentResult = "2.UNSTABLE(RC)"
                   throw new Exception("===Throw to retry unloading===")
-//                } else {
-//                  currentBuild.currentResult = "SUCCESS"
                 }
               }
             }
@@ -164,7 +157,6 @@ pipeline {
             if (RC>0) {
               final String content = readFile(file: "log\\updateCf.log")
               msg_ERR = msg_ERR + "\n3.UPDATE:\n${content}"
-//              currentBuild.currentResult = "3.UNSTABLE"
               bat """@chcp 65001>nul
               @echo ################# [RC:${RC}] ####################
               @type log\\updateCf.log
@@ -194,7 +186,6 @@ echo ">>>>>>>>> " + currentBuild.currentResult
               }
 
               if (RC>0) {
-//                currentBuild.currentResult = "4.UNSTABLE"
                 msg_ERR = msg_ERR + "\n4.COPY:\nОшибка копирования ${DT} --> ${NetPath}"
                 bat """@chcp 65001>nul
                   Set src=${DT.replaceAll( /\//, "\\\\" )}
@@ -206,7 +197,6 @@ echo ">>>>>>>>> " + currentBuild.currentResult
                 """
               } else {
                // TODO: если размер файла > 0 и дата файла сегодня
-//                currentBuild.currentResult = "SUCCESS"
               }
             }
 echo ">>>>>>>>> " + currentBuild.currentResult
