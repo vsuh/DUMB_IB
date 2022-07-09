@@ -63,7 +63,7 @@ pipeline {
             }
           }
         }
-        echo ">>>>>>>>>(${RC}) " + currentBuild.currentResult
+        echo ">>>>>>>>>(${RETURN_STATUS}) " + currentBuild.currentResult
       }
     }
     stage ("2. Выгрузка ИБ в dt файл") {
