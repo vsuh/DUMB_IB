@@ -71,7 +71,7 @@ pipeline {
         script {
 
           def TIMES = [mc_bnu: 7200, mc_zup: 3600, mc_uat: 900, mc_zup_111: 3600]
-          timeoutValue = TIMES[ib]
+          timeoutValue = TIMES[ib] == null ? 3666 : TIMES[ib]
 
           withCredentials([usernamePassword(credentialsId: 'IBadmin'
             , passwordVariable: 'ibPASSWORD', usernameVariable: 'ibADMIN')
